@@ -1,5 +1,5 @@
 /*
-Version: 0.040
+Version: 0.050
 Magloop Automatic Controller-Firmware
 Arduino Mega 2560 and A4988 Stepper Driver
 Author: Michael Poschner (DL4MGD)
@@ -7,7 +7,7 @@ Licence: Ablolutely Free
 Using MobaTools for steppercontrol
 Using Subroutining
 
-Loop-Parameter: Min. capacity = 9.568 MHz
+Loop-Parameters: Min. capacity = 9.568 MHz
                 Max. capacity = 29,900 MHz
 
 */
