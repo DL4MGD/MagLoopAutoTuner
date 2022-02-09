@@ -108,13 +108,21 @@ void setup() {
         myStepper.setSpeedSteps(36000);     
         myStepper.writeSteps(6000);       
         lcd.setCursor(0,0);
-        lcd.print("Calibrating!");
-        SfZe=myStepper.readSteps();
+        lcd.print("Searching zero......");
         lcd.setCursor(0,1);
-        lcd.print("Position:");
-        lcd.setCursor(10,1);
-        lcd.print(SfZe);
-    }
+        SfZe=myStepper.readSteps();
+        if (SfZe >= 5900){
+          lcd.setCursor(0,3);
+          lcd.print("ERR: Miss CalSig!");
+        }
+          else if (valEndSensor != 0){
+          myStepper.stop();
+          lcd.clear();
+          lcd.print("Found: Calibrated!");
+          delay(2000);
+         }
+        lcd.setCursor(0,3);
+  }
   lcd.clear();
   myStepper.setZero();
 }
