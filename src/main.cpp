@@ -15,7 +15,7 @@ Loop-Parameters: Min. capacity = 9.568 MHz
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include <MobaTools.h>
-// Connections to A4988
+
   const int dirPin = 2;                 // Direction
   const int stepPin = 3;                // Step
   const int enablePin = 4;              // Chip enable/disable
@@ -332,7 +332,7 @@ static void PosSetZero()
         valPosSetZero=digitalRead(pinPosSetZero);
         lcd.setCursor(0,0);
         myStepper.setZero();
-        lcd.print("New Zero is set now!");
+        lcd.print("New Zero is now set!");
     }
     lcd.clear();
 }
@@ -400,46 +400,56 @@ void loop()
 {
       valFFWD = digitalRead(pinFFWD);
       myStepper.stop( );
-      if (valFFWD == 0){ 
+      if (valFFWD == 0){
+        delay(25); 
         FFWD();
       }
     valFRWD = digitalRead(pinFRWD);
       myStepper.stop( );      
       if (valFRWD == 0){
+        delay(25);
         FRWD();
       }
     valSFWD = digitalRead(pinSFWD);
       myStepper.stop( );      
       if (valSFWD == 0){ 
+          delay(25);
           SFWD();
       }
     valSRWD = digitalRead(pinSRWD);
       myStepper.stop( );      
       if (valSRWD == 0){
+        delay(25);        
           SRWD();
       }
     valATSTART = digitalRead(pinATSTART);
       if (valATSTART == 0){
+          delay(25);        
           ATSTART();
       }
     valATSTOP = digitalRead(pinATSTOP);
       if (valATSTOP == 0){
+          delay(25);        
           ATSTOP();
       }
       valMaxIN = digitalRead(pinMaxIN);
       if (valMaxIN == 0){
+        delay(25);
         MaxIN();
       }
      valMaxOUT = digitalRead(pinMaxOUT);
       if (valMaxOUT == 0){
+        delay(25);        
         MaxOUT();
       }
       valPosSetZero = digitalRead(pinPosSetZero);
       if (valPosSetZero == 0){
+        delay(25);        
         PosSetZero();
       }
       valSpare = digitalRead(pinSpare);
       if (valSpare == 0){
+        delay(25);        
         Spare();
       }
 
