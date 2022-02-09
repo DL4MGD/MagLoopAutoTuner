@@ -1,5 +1,5 @@
 /*
-Version: 0.030
+Version: 0.040
 Magloop Automatic Controller-Firmware
 Arduino Mega 2560 and A4988 Stepper Driver
 Author: Michael Poschner (DL4MGD)
@@ -34,6 +34,7 @@ Loop-Parameter: Min. capacity = 9.568 MHz
   const int pinMaxOUT = A13;            // highest frequency
   const int pinPosSetZero = A14;        // Mobatools set zero
   const int pinSpare = A15;             // Undefined jet
+  const int pinEndSensor = A5;          // Zero detector
 MoToStepper myStepper ( 200, STEPDIR );
 LiquidCrystal_I2C lcd(0x27,20,4);
   int pinREFPO = A1;                    // Pin, to read reflected power
@@ -59,16 +60,17 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int SpeedStepsFast = 5000;            // Fast stepper turning
   int SpeedStepsSlow = 250;             // Slow stepper turning
   int SfZe = 0;                         // Steps away from Zero position
-  int RampLen = 50;                     // Smoothing 
+  int RampLen = 50;                     // Smoothing
+  int valEndSensor = 0;                 // Calibrate zero position 
 
 void setup() {
   pinMode(stepPin, OUTPUT); 
   pinMode(dirPin, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
-  Serial.begin(9600);                 // Setup serial output speed
-  digitalWrite(ms1, LOW);             // Stepping 1 A4988
-  digitalWrite(ms2, HIGH);            // Stepping 2 A4988
-  digitalWrite(ms3, LOW);             // Stepping 3 A4988
+  Serial.begin(9600);                   // Setup serial output speed
+  digitalWrite(ms1, LOW);               // Stepping 1 A4988
+  digitalWrite(ms2, HIGH);              // Stepping 2 A4988
+  digitalWrite(ms3, LOW);               // Stepping 3 A4988
   pinMode(pinFFWD, INPUT_PULLUP);
   pinMode(pinFRWD, INPUT_PULLUP);
   pinMode(pinSFWD, INPUT_PULLUP);
@@ -79,6 +81,7 @@ void setup() {
   pinMode(pinMaxOUT, INPUT_PULLUP);
   pinMode(pinPosSetZero, INPUT_PULLUP);
   pinMode(pinSpare, INPUT_PULLUP);
+  pinMode(pinEndSensor, INPUT_PULLUP);
 
   lcd.init();
   lcd.backlight();
@@ -90,7 +93,34 @@ void setup() {
   delay(250);
   myStepper.stop();
   myStepper.setZero();
+
+
+//Calibrate zero position
+
+   lcd.clear();
+  while (valEndSensor == 0){
+        valEndSensor=digitalRead(pinEndSensor);
+        digitalWrite(ms1, LOW);            
+        digitalWrite(ms2, HIGH);            
+        digitalWrite(ms3, LOW);
+        myStepper.attachEnable( enablePin, 10, HIGH );
+        myStepper.setRampLen(RampLen);
+        myStepper.setSpeedSteps(36000);     
+        myStepper.writeSteps(6000);       
+        lcd.setCursor(0,0);
+        lcd.print("Calibrating!");
+        SfZe=myStepper.readSteps();
+        lcd.setCursor(0,1);
+        lcd.print("Position:");
+        lcd.setCursor(10,1);
+        lcd.print(SfZe);
+    }
+  lcd.clear();
+  myStepper.setZero();
 }
+
+    
+
 static void FFWD()
 {
 lcd.clear();   
