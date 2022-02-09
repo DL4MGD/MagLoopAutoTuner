@@ -54,7 +54,7 @@ int valATSTOP = 0;                    // Manual stop autotune
 int valMaxIN = 0;                     // Maximal Capacity 
 int valMaxOUT = 0;                    // Minimal Capacity
 int valPosSetZero = 0;                // Mobatools set zero
-int valSpare = 0;                    // Undefined jet
+int valSpare = 0;                     // Undefined jet
 
 int valREFPO = 0;                     // Initialize reflected power
 int valFWDPO = 0;                     // Initialize forward power
