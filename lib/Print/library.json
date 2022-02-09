@@ -1,0 +1,22 @@
+{
+    "authors": {
+        "name": "Valentino Saitz",
+        "url": "https://os.mbed.com/users/DVSProductions/"
+    },
+    "build": {
+        "builder": "MbedLibBuilder"
+    },
+    "description": "Arduino Print library for MBED",
+    "examples": [
+        "https://os.mbed.com/users/DVSProductions/code/LiquidCrystal_I2C/"
+    ],
+    "frameworks": "mbed",
+    "keywords": [],
+    "name": "Print",
+    "platforms": "*",
+    "repository": {
+        "type": "hg",
+        "url": "https://os.mbed.com/users/DVSProductions/code/Print/"
+    },
+    "version": "0.0.0+sha.4f62090ee72f"
+}
