@@ -405,7 +405,7 @@ static void ATSTART()
               lcd.print(SfZe);
 
 valREFPOaft=digitalRead(pinREFPO);
-if (valREFPOaft < valREFPObef){
+if (valREFPObef > valREFPOaft){
   for (int i; i >= 200; i--){
     if (valREFPO-20 < 100){
      myStepper.setSpeedSteps(100);
