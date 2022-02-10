@@ -334,23 +334,42 @@ static void PosSetZero()
 
 static void Spare()
 {
-   lcd.clear();
-    digitalWrite(ms1, HIGH);            
-    digitalWrite(ms2, HIGH);            
-    digitalWrite(ms3, HIGH);              
+  lcd.clear();
+  digitalWrite(ms1, LOW);            
+  digitalWrite(ms2, HIGH);            
+  digitalWrite(ms3, LOW); 
+  for (int i; i = 4000; i--){
         while (valSpare == 0){
         valSpare=digitalRead(pinSpare);
+        }
+        valEndSensor=digitalRead(pinEndSensor);
+        digitalWrite(ms1, LOW);            
+        digitalWrite(ms2, HIGH);            
+        digitalWrite(ms3, LOW);
+        myStepper.attachEnable( enablePin, 10, HIGH );
+        myStepper.setSpeedSteps(30000);     
+        myStepper.writeSteps(6000);       
         lcd.setCursor(0,0);
-        lcd.print("Leck mich!");
-        SfZe = myStepper.readSteps();
-        lcd.setCursor(0,2);
-        lcd.print("Steps from 0:");
-        lcd.setCursor(14,2);
-        lcd.print(SfZe);
-        myStepper.writeSteps(SfZe);
-     }
-    lcd.clear();
-}
+        lcd.print("Searching zero......");
+        lcd.setCursor(0,1);
+        SfZe=myStepper.readSteps();
+
+   if (SfZe >= 5900){
+          lcd.setCursor(0,3);
+          lcd.print("ERROR: No CalSig!");
+        }
+   else if (valEndSensor != 0){
+          myStepper.stop();
+          lcd.clear();
+          lcd.print("Found: Calibrated!");
+          delay(2000);
+          lcd.clear();
+          break;
+         }
+         
+  }     
+ }
+        
 
 
 //############################# START Auto Tuning START ####################
