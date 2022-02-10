@@ -98,7 +98,7 @@ void setup() {
         digitalWrite(ms2, HIGH);            
         digitalWrite(ms3, LOW);
         myStepper.attachEnable( enablePin, 10, HIGH );
-        myStepper.setSpeedSteps(36000);     
+        myStepper.setSpeedSteps(30000);     
         myStepper.writeSteps(6000);       
         lcd.setCursor(0,0);
         lcd.print("Searching zero......");
@@ -118,6 +118,7 @@ void setup() {
   }
   lcd.clear();
   myStepper.setZero();
+  digitalWrite(enablePin, HIGH);
 }
 
     
@@ -158,7 +159,8 @@ lcd.clear();
         lcd.setCursor(10,3);
         lcd.print(SfZe); 
         }
-lcd.clear();         
+lcd.clear();    
+   
 }      
 
 static void FRWD()
@@ -330,32 +332,44 @@ static void PosSetZero()
     lcd.clear();
 }
 
-static void Spare()
+static void Recalibrate()
 {
    lcd.clear();
-    digitalWrite(ms1, HIGH);            
-    digitalWrite(ms2, HIGH);            
-    digitalWrite(ms3, HIGH);              
-        while (valSpare == 0){
-        valSpare=digitalRead(pinSpare);
+  while (valEndSensor == 0){
+        valEndSensor=digitalRead(pinEndSensor);
+        digitalWrite(ms1, LOW);            
+        digitalWrite(ms2, HIGH);            
+        digitalWrite(ms3, LOW);
+        myStepper.attachEnable( enablePin, 10, HIGH );
+        myStepper.setSpeedSteps(30000);     
+        myStepper.writeSteps(6000);       
         lcd.setCursor(0,0);
-        lcd.print("Information!");
-        SfZe = myStepper.readSteps();
-        lcd.setCursor(0,2);
-        lcd.print("Steps from 0:");
-        lcd.setCursor(14,2);
-        lcd.print(SfZe);
-        myStepper.writeSteps(SfZe);
-
-    }
-    lcd.clear();
+        lcd.print("Searching zero......");
+        lcd.setCursor(0,1);
+        SfZe=myStepper.readSteps();
+        if (SfZe >= 5900){
+          lcd.setCursor(0,3);
+          lcd.print("ERROR: No CalSig!");
+        }
+          else if (valEndSensor != 0){
+          myStepper.stop();
+          lcd.clear();
+          lcd.print("Found: Calibrated!");
+          delay(2000);
+         }
+        lcd.setCursor(0,3);
+  }
+  lcd.clear();
+  myStepper.setZero();
+//digitalWrite(enablePin, HIGH);
 }
 
 //############################# START Auto Tuning START ####################
 static void ATSTART()
 {
   lcd.clear();
-  for( int i=200; i >= 0; i--){
+  for( int i=10000; i >= 0; i--){
+
     valATSTOP=digitalRead(pinATSTOP);
     if (valATSTOP ==0 ){
       myStepper.stop();
@@ -365,9 +379,9 @@ static void ATSTART()
     digitalWrite(ms2, HIGH);            
     digitalWrite(ms3, LOW);             
     myStepper.attachEnable( enablePin, 10, HIGH ); 
-    myStepper.setSpeedSteps(SpeedStepsFast);
-    myStepper.doSteps(10000);
-      valREFPObef=analogRead(pinREFPO);
+    myStepper.setSpeedSteps(4000);
+    valREFPObef=analogRead(pinREFPO);
+    myStepper.doSteps(1000);
               lcd.setCursor(0,0);
               lcd.print("Tuning...!");
               lcd.setCursor(0,1);
@@ -375,18 +389,31 @@ static void ATSTART()
               lcd.setCursor(12,1);
               lcd.print(valREFPObef);
               lcd.setCursor(12,1);
-        SfZe=myStepper.readSteps();
-        lcd.setCursor(0,3);
-        lcd.print("Position:");
-        lcd.setCursor(10,3);
-        lcd.print(SfZe);    
-         }
-        lcd.print("   ");
+              SfZe=myStepper.readSteps();
+              lcd.setCursor(0,3);
+              lcd.print("Position:");
+              lcd.setCursor(10,3);
+              lcd.print(SfZe); 
+
+while (valREFPObef > valREFPOaft){
+    if (valATSTOP ==0 ){
+      myStepper.stop();
+      break;
+    }      
+      myStepper.setSpeed(100);
+    }
+
 }
+        lcd.setCursor(12,1);         
+        lcd.print("     ");
+}
+//############################# STOP Auto Tuning STOP  ####################
+
+
 static void ATSTOP()
 {
 }
-//############################# STOP Auto Tuning STOP  ####################
+
 
 void loop()
 {
@@ -442,7 +469,7 @@ void loop()
       valSpare = digitalRead(pinSpare);
       if (valSpare == 0){
         delay(25);        
-        Spare();
+        Recalibrate();
       }
 
 
