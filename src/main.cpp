@@ -338,7 +338,7 @@ static void Spare()
   digitalWrite(ms1, LOW);            
   digitalWrite(ms2, HIGH);            
   digitalWrite(ms3, LOW); 
-  for (int i; i = 4000; i--){
+  for (int i; i == 4000; i--){
         while (valSpare == 0){
         valSpare=digitalRead(pinSpare);
         }
@@ -350,19 +350,20 @@ static void Spare()
         myStepper.setSpeedSteps(30000);     
         myStepper.writeSteps(6000);       
         lcd.setCursor(0,0);
-        lcd.print("Searching zero......");
+        lcd.print("Recalibrating...");
         lcd.setCursor(0,1);
         SfZe=myStepper.readSteps();
 
-   if (SfZe >= 5900){
+  if (SfZe >= 5900){
           lcd.setCursor(0,3);
           lcd.print("ERROR: No CalSig!");
         }
-   else if (valEndSensor != 0){
+  else if (valEndSensor != 0){
           myStepper.stop();
           lcd.clear();
           lcd.print("Found: Calibrated!");
           delay(2000);
+          myStepper.setZero();
           lcd.clear();
           break;
          }
