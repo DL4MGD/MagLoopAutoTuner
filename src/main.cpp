@@ -1,5 +1,5 @@
 /*
-Version: 0.050
+Version: 0.051
 Magloop Automatic Controller-Firmware
 Arduino Mega 2560 and A4988 Stepper Driver
 Author: Michael Poschner (DL4MGD)
@@ -332,37 +332,26 @@ static void PosSetZero()
     lcd.clear();
 }
 
-static void Recalibrate()
+static void Spare()
 {
    lcd.clear();
-  while (valEndSensor == 0){
-        valEndSensor=digitalRead(pinEndSensor);
-        digitalWrite(ms1, LOW);            
-        digitalWrite(ms2, HIGH);            
-        digitalWrite(ms3, LOW);
-        myStepper.attachEnable( enablePin, 10, HIGH );
-        myStepper.setSpeedSteps(30000);     
-        myStepper.writeSteps(6000);       
+    digitalWrite(ms1, HIGH);            
+    digitalWrite(ms2, HIGH);            
+    digitalWrite(ms3, HIGH);              
+        while (valSpare == 0){
+        valSpare=digitalRead(pinSpare);
         lcd.setCursor(0,0);
-        lcd.print("Searching zero......");
-        lcd.setCursor(0,1);
-        SfZe=myStepper.readSteps();
-        if (SfZe >= 5900){
-          lcd.setCursor(0,3);
-          lcd.print("ERROR: No CalSig!");
-        }
-          else if (valEndSensor != 0){
-          myStepper.stop();
-          lcd.clear();
-          lcd.print("Found: Calibrated!");
-          delay(2000);
-         }
-        lcd.setCursor(0,3);
-  }
-  lcd.clear();
-  myStepper.setZero();
-//digitalWrite(enablePin, HIGH);
+        lcd.print("Leck mich!");
+        SfZe = myStepper.readSteps();
+        lcd.setCursor(0,2);
+        lcd.print("Steps from 0:");
+        lcd.setCursor(14,2);
+        lcd.print(SfZe);
+        myStepper.writeSteps(SfZe);
+     }
+    lcd.clear();
 }
+
 
 //############################# START Auto Tuning START ####################
 static void ATSTART()
@@ -469,7 +458,7 @@ void loop()
       valSpare = digitalRead(pinSpare);
       if (valSpare == 0){
         delay(25);        
-        Recalibrate();
+        Spare();
       }
 
 
