@@ -58,7 +58,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valSpeedSteps = 0;                //
   int valCurrentSpped = 0;              // Save current speed setting
   int SpeedStepsFast = 5000;            // Fast stepper turning
-  int SpeedStepsSlow = 250;             // Slow stepper turning
+  int SpeedStepsSlow = 100;             // Slow stepper turning
   int SfZe = 0;                         // Steps away from Zero position
   int RampLen = 250;                    // Smoothing
   int valEndSensor = 0;                 // Calibrate zero position 
@@ -86,7 +86,8 @@ void setup() {
   lcd.init();
   lcd.backlight();
   myStepper.attach( stepPin, dirPin );
-
+        lcd.setCursor(10,3);
+        lcd.print("    ");
 
 //Calibrate zero position
 
@@ -374,13 +375,13 @@ static void ATSTART()
               lcd.setCursor(12,1);
               lcd.print(valREFPObef);
               lcd.setCursor(12,1);
-              lcd.print("    ");
         SfZe=myStepper.readSteps();
         lcd.setCursor(0,3);
         lcd.print("Position:");
         lcd.setCursor(10,3);
         lcd.print(SfZe);    
          }
+        lcd.print("   ");
 }
 static void ATSTOP()
 {
