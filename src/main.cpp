@@ -112,7 +112,7 @@ void setup() {
           myStepper.stop();
           lcd.clear();
           lcd.print("Found: Calibrated!");
-          delay(2000);
+          delay(1000);
          }
         lcd.setCursor(0,3);
   }
@@ -127,16 +127,16 @@ static void FFWD()
 {
 lcd.clear();   
       while (valFFWD == 0){
-  digitalWrite(ms1, LOW);            
-  digitalWrite(ms2, HIGH);            
-  digitalWrite(ms3, LOW);             
+  digitalWrite(ms1, LOW);
+  digitalWrite(ms2, HIGH);
+  digitalWrite(ms3, LOW);
         valFFWD = digitalRead(pinFFWD);
-        myStepper.attachEnable( enablePin, 10, HIGH ); 
+        myStepper.attachEnable( enablePin, 10, HIGH );
         myStepper.setSpeedSteps(SpeedStepsFast);
         myStepper.doSteps(10000);
           valREFPO = analogRead(pinREFPO);
           valFWDPO = analogRead(pinFWDPO);
-          valVSWR = (valFWDPO/valREFPO);        
+          valVSWR = (valFWDPO/valREFPO);
           valFFWD = digitalRead(pinFFWD);
           valFRWD = digitalRead(pinFRWD);
           valSFWD = digitalRead(pinSFWD);
@@ -159,24 +159,24 @@ lcd.clear();
         lcd.setCursor(10,3);
         lcd.print(SfZe); 
         }
-lcd.clear();    
-   
-}      
+lcd.clear();
+
+}
 
 static void FRWD()
 {
-lcd.clear(); 
+lcd.clear();
       while (valFRWD == 0){
   digitalWrite(ms1, LOW);            
-  digitalWrite(ms2, HIGH);            
-  digitalWrite(ms3, LOW);                    
+  digitalWrite(ms2, HIGH);
+  digitalWrite(ms3, LOW);
         valFRWD = digitalRead(pinFRWD);
-        myStepper.attachEnable( enablePin, 10, HIGH ); 
+        myStepper.attachEnable( enablePin, 10, HIGH );
         myStepper.setSpeedSteps(SpeedStepsFast);
         myStepper.doSteps(-10000);
           valREFPO = analogRead(pinREFPO);
           valFWDPO = analogRead(pinFWDPO);
-          valVSWR = (valFWDPO/valREFPO);        
+          valVSWR = (valFWDPO/valREFPO);
           valFFWD = digitalRead(pinFFWD);
           valFRWD = digitalRead(pinFRWD);
           valSFWD = digitalRead(pinSFWD);
@@ -192,30 +192,30 @@ lcd.clear();
           lcd.setCursor(0,2);
           lcd.print("VSWR=");
           lcd.print(valVSWR+1);
-          lcd.print("      "); 
+          lcd.print("      ");
         SfZe=myStepper.readSteps();
         lcd.setCursor(0,3);
         lcd.print("Pos. is:");
         lcd.setCursor(10,3);
         lcd.print(SfZe); 
        }
-lcd.clear();        
+lcd.clear();
 }       
 
 static void SFWD()
 {
 lcd.clear(); 
       while (valSFWD == 0){
-  digitalWrite(ms1, HIGH);            
-  digitalWrite(ms2, HIGH);            
-  digitalWrite(ms3, HIGH);                   
+  digitalWrite(ms1, HIGH);
+  digitalWrite(ms2, HIGH);
+  digitalWrite(ms3, HIGH);
         valSFWD = digitalRead(pinSFWD);
         myStepper.attachEnable( enablePin, 10, HIGH ); 
         myStepper.setSpeedSteps(SpeedStepsSlow);
         myStepper.doSteps(10000);
           valREFPO = analogRead(pinREFPO);
           valFWDPO = analogRead(pinFWDPO);
-          valVSWR = (valFWDPO/valREFPO);        
+          valVSWR = (valFWDPO/valREFPO);
           valFFWD = digitalRead(pinFFWD);
           valFRWD = digitalRead(pinFRWD);
           valSFWD = digitalRead(pinSFWD);
@@ -236,24 +236,24 @@ lcd.clear();
         lcd.setCursor(0,3);
         lcd.print("Position:");
         lcd.setCursor(10,3);
-        lcd.print(SfZe);            
+        lcd.print(SfZe);
         }
-lcd.clear();         
+lcd.clear();
 }
 static void SRWD()
 {
 lcd.clear(); 
       while (valSRWD == 0){
-  digitalWrite(ms1, HIGH);            
-  digitalWrite(ms2, HIGH);            
-  digitalWrite(ms3, HIGH);                           
+  digitalWrite(ms1, HIGH);
+  digitalWrite(ms2, HIGH);
+  digitalWrite(ms3, HIGH);
         valSRWD = digitalRead(pinSRWD);
         myStepper.attachEnable( enablePin, 10, HIGH ); 
         myStepper.setSpeedSteps(SpeedStepsSlow);
         myStepper.doSteps(-10000);
           valREFPO = analogRead(pinREFPO);
           valFWDPO = analogRead(pinFWDPO);
-          valVSWR = (valFWDPO/valREFPO);        
+          valVSWR = (valFWDPO/valREFPO);
           valFFWD = digitalRead(pinFFWD);
           valFRWD = digitalRead(pinFRWD);
           valSFWD = digitalRead(pinSFWD);
@@ -274,7 +274,7 @@ lcd.clear();
         lcd.setCursor(0,3);
         lcd.print("Position:");
         lcd.setCursor(10,3);
-        lcd.print(SfZe);            
+        lcd.print(SfZe);
         }
 }
 static void MaxIN()
@@ -282,12 +282,12 @@ static void MaxIN()
   lcd.clear();
   while (valMaxIN == 0){
         valMaxIN=digitalRead(pinMaxIN);
-        digitalWrite(ms1, LOW);            
-        digitalWrite(ms2, HIGH);            
+        digitalWrite(ms1, LOW);
+        digitalWrite(ms2, HIGH);
         digitalWrite(ms3, LOW);
         myStepper.attachEnable( enablePin, 10, HIGH );
-        myStepper.setSpeedSteps(36000);     
-        myStepper.writeSteps(3000);       
+        myStepper.setSpeedSteps(36000);
+        myStepper.writeSteps(3000);
         lcd.setCursor(0,0);
         lcd.print("Going to pos!");
         SfZe=myStepper.readSteps();
@@ -303,12 +303,12 @@ static void MaxOUT()
   lcd.clear();
   while (valMaxOUT == 0){
         valMaxOUT=digitalRead(pinMaxOUT);
-        digitalWrite(ms1, LOW);            
-        digitalWrite(ms2, HIGH);            
+        digitalWrite(ms1, LOW);
+        digitalWrite(ms2, HIGH);
         digitalWrite(ms3, LOW);
         myStepper.attachEnable( enablePin, 10, HIGH );
-        myStepper.setSpeedSteps(36000);     
-        myStepper.writeSteps(1500);       
+        myStepper.setSpeedSteps(36000);
+        myStepper.writeSteps(1500);
         lcd.setCursor(0,0);
         lcd.print("Going to pos!");
         SfZe=myStepper.readSteps();
@@ -338,7 +338,7 @@ static void Spare()
   digitalWrite(ms1, LOW);            
   digitalWrite(ms2, HIGH);            
   digitalWrite(ms3, LOW); 
-  for (int i; i == 4000; i--){
+  for (int i; i < 4000; i--){
         while (valSpare == 0){
         valSpare=digitalRead(pinSpare);
         }
@@ -350,7 +350,7 @@ static void Spare()
         myStepper.setSpeedSteps(30000);     
         myStepper.writeSteps(6000);       
         lcd.setCursor(0,0);
-        lcd.print("Recalibrating...");
+        lcd.print("Recalibrating......");
         lcd.setCursor(0,1);
         SfZe=myStepper.readSteps();
 
@@ -362,7 +362,7 @@ static void Spare()
           myStepper.stop();
           lcd.clear();
           lcd.print("Found: Calibrated!");
-          delay(2000);
+          delay(1000);
           myStepper.setZero();
           lcd.clear();
           break;
@@ -378,19 +378,19 @@ static void ATSTART()
 {
   lcd.clear();
   for( int i=10000; i >= 0; i--){
-
     valATSTOP=digitalRead(pinATSTOP);
     if (valATSTOP ==0 ){
       myStepper.stop();
+      lcd.clear();
       break;
-        }
-    digitalWrite(ms1, LOW);            
-    digitalWrite(ms2, HIGH);            
-    digitalWrite(ms3, LOW);             
+    }
+    digitalWrite(ms1, LOW);
+    digitalWrite(ms2, HIGH);
+    digitalWrite(ms3, LOW);
     myStepper.attachEnable( enablePin, 10, HIGH ); 
     myStepper.setSpeedSteps(4000);
     valREFPObef=analogRead(pinREFPO);
-    myStepper.doSteps(1000);
+    myStepper.writeSteps(12000);
               lcd.setCursor(0,0);
               lcd.print("Tuning...!");
               lcd.setCursor(0,1);
@@ -402,19 +402,22 @@ static void ATSTART()
               lcd.setCursor(0,3);
               lcd.print("Position:");
               lcd.setCursor(10,3);
-              lcd.print(SfZe); 
+              lcd.print(SfZe);
 
-while (valREFPObef > valREFPOaft){
-    if (valATSTOP ==0 ){
-      myStepper.stop();
-      break;
-    }      
-      myStepper.setSpeed(100);
+valREFPOaft=digitalRead(pinREFPO);
+if (valREFPOaft < valREFPObef){
+  for (int i; i >= 200; i--){
+    if (valREFPO-20 < 100){
+     myStepper.setSpeedSteps(100);
+      myStepper.doSteps(-1);
+      }
     }
-
-}
-        lcd.setCursor(12,1);         
-        lcd.print("     ");
+  valREFPOaft=digitalRead(pinREFPO);
+  if (valREFPO  < 100){
+    break;
+      } 
+    }
+  }     
 }
 //############################# STOP Auto Tuning STOP  ####################
 
