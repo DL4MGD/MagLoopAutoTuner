@@ -8,7 +8,7 @@ Using MobaTools for steppercontrol
 Using Subroutining
 
 Loop-Parameters: Min. capacity = 9.568 MHz
-                Max. capacity = 29,900 MHz
+                 Max. capacity = 29,900 MHz
 
 */
 #include <Arduino.h>
@@ -60,7 +60,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int SpeedStepsFast = 5000;            // Fast stepper turning
   int SpeedStepsSlow = 250;             // Slow stepper turning
   int SfZe = 0;                         // Steps away from Zero position
-  int RampLen = 50;                     // Smoothing
+  int RampLen = 250;                    // Smoothing
   int valEndSensor = 0;                 // Calibrate zero position 
 
 void setup() {
@@ -86,13 +86,6 @@ void setup() {
   lcd.init();
   lcd.backlight();
   myStepper.attach( stepPin, dirPin );
-  myStepper.setSpeed(1000);
-  myStepper.writeSteps(100);
-  delay(250);
-  myStepper.writeSteps(-100);
-  delay(250);
-  myStepper.stop();
-  myStepper.setZero();
 
 
 //Calibrate zero position
@@ -104,7 +97,6 @@ void setup() {
         digitalWrite(ms2, HIGH);            
         digitalWrite(ms3, LOW);
         myStepper.attachEnable( enablePin, 10, HIGH );
-        myStepper.setRampLen(RampLen);
         myStepper.setSpeedSteps(36000);     
         myStepper.writeSteps(6000);       
         lcd.setCursor(0,0);
@@ -113,7 +105,7 @@ void setup() {
         SfZe=myStepper.readSteps();
         if (SfZe >= 5900){
           lcd.setCursor(0,3);
-          lcd.print("ERR: Miss CalSig!");
+          lcd.print("ERROR: No CalSig!");
         }
           else if (valEndSensor != 0){
           myStepper.stop();
@@ -381,15 +373,14 @@ static void ATSTART()
               lcd.print("Reflected:");
               lcd.setCursor(12,1);
               lcd.print(valREFPObef);
-              lcd.setCursor(10,3);
+              lcd.setCursor(12,1);
               lcd.print("    ");
         SfZe=myStepper.readSteps();
         lcd.setCursor(0,3);
         lcd.print("Position:");
         lcd.setCursor(10,3);
-        lcd.print(SfZe);               
+        lcd.print(SfZe);    
          }
-         lcd.clear();
 }
 static void ATSTOP()
 {
