@@ -33,7 +33,7 @@ Loop-Parameters: Min. capacity = 9.568 MHz
   const int pinMaxIN = A12;             // Lowest frequency
   const int pinMaxOUT = A13;            // highest frequency
   const int pinPosSetZero = A14;        // Mobatools set zero
-  const int pinSpare = A15;             // Undefined jet
+  const int pinManuCal = A15;             // Undefined jet
   const int pinEndSensor = A5;          // Zero detector
 MoToStepper myStepper ( 200, STEPDIR );
 LiquidCrystal_I2C lcd(0x27,20,4);
@@ -49,7 +49,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valMaxIN = 0;                     // Maximal Capacity 
   int valMaxOUT = 0;                    // Minimal Capacity
   int valPosSetZero = 0;                // Mobatools set zero
-  int valSpare = 0;                     // Undefined jet
+  int valManuCal = 0;                     // Undefined jet
   int valREFPO = 0;                     // Initialize reflected power
   int valFWDPO = 0;                     // Initialize forward power
   int valVSWR = 0;                      // VSWR
@@ -80,7 +80,7 @@ void setup() {
   pinMode(pinMaxIN, INPUT_PULLUP);
   pinMode(pinMaxOUT, INPUT_PULLUP);
   pinMode(pinPosSetZero, INPUT_PULLUP);
-  pinMode(pinSpare, INPUT_PULLUP);
+  pinMode(pinManuCal, INPUT_PULLUP);
   pinMode(pinEndSensor, INPUT_PULLUP);
 
   lcd.init();
@@ -332,15 +332,15 @@ static void PosSetZero()
     lcd.clear();
 }
 
-static void Spare()
+static void ManuCal()
 {
   lcd.clear();
   digitalWrite(ms1, LOW);            
   digitalWrite(ms2, HIGH);            
   digitalWrite(ms3, LOW); 
   for (int i; i < 4000; i--){
-        while (valSpare == 0){
-        valSpare=digitalRead(pinSpare);
+        while (valManuCal == 0){
+        valManuCal=digitalRead(pinManuCal);
         }
         valEndSensor=digitalRead(pinEndSensor);
         digitalWrite(ms1, LOW);            
@@ -478,10 +478,10 @@ void loop()
         delay(25);        
         PosSetZero();
       }
-      valSpare = digitalRead(pinSpare);
-      if (valSpare == 0){
+      valManuCal = digitalRead(pinManuCal);
+      if (valManuCal == 0){
         delay(25);        
-        Spare();
+        ManuCal();
       }
 
 
