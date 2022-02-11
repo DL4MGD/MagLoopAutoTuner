@@ -56,9 +56,10 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valREFPObef = 0;                  // Reflected power value before a tuning step
   int valREFPOaft = 0;                  // Refrectec power value after a tuning step
   int valSpeedSteps = 0;                //
-  int valCurrentSpped = 0;              // Save current speed setting
+  int valCurrentSpeed = 0;              // Save current speed setting
   int SpeedStepsFast = 5000;            // Fast stepper turning
   int SpeedStepsSlow = 100;             // Slow stepper turning
+  int SpeedStepsTune = 3500;            // Beginn tuning with this speed
   int SfZe = 0;                         // Steps away from Zero position
   int RampLen = 250;                    // Smoothing
   int valEndSensor = 0;                 // Calibrate zero position 
@@ -354,7 +355,7 @@ static void ManuCal()
         lcd.setCursor(0,1);
         SfZe=myStepper.readSteps();
 
-  if (SfZe >= 5900){
+  if (SfZe >= 3900){
           lcd.setCursor(0,3);
           lcd.print("ERROR: No CalSig!");
         }
@@ -365,9 +366,10 @@ static void ManuCal()
           delay(1000);
           myStepper.setZero();
           lcd.clear();
+          digitalWrite(enablePin, HIGH);
           break;
-         }
-         
+        }
+        
   }     
  }
         
@@ -377,7 +379,7 @@ static void ManuCal()
 static void ATSTART()
 {
   lcd.clear();
-  for( int i=10000; i >= 0; i--){
+  for( int i=3200; i >= 0; i--){
     valATSTOP=digitalRead(pinATSTOP);
     if (valATSTOP ==0 ){
       myStepper.stop();
@@ -388,7 +390,7 @@ static void ATSTART()
   digitalWrite(ms2, HIGH);
   digitalWrite(ms3, HIGH);
     myStepper.attachEnable( enablePin, 10, HIGH ); 
-    myStepper.setSpeedSteps(SpeedStepsFast);
+    myStepper.setSpeedSteps(SpeedStepsTune);
     valREFPObef=analogRead(pinREFPO);
     myStepper.writeSteps(12000);
               lcd.setCursor(0,0);
@@ -404,8 +406,17 @@ static void ATSTART()
               lcd.setCursor(10,3);
               lcd.print(SfZe);
 
+
 valREFPOaft=digitalRead(pinREFPO);
-if (valREFPObef >= valREFPOaft){
+if (valREFPOaft > 100){
+  break;
+    }
+  }
+lcd.clear();  
+}
+
+/*valREFPOaft=digitalRead(pinREFPO);
+if (valREFPOaft >= valREFPObef){
 valREFPOaft=digitalRead(pinREFPO);  
   for (int i; i >= 200; i--){
     if (valREFPO < 120){
@@ -445,7 +456,7 @@ valREFPOaft=digitalRead(pinREFPO);
   }     
 }
 //############################# STOP Auto Tuning STOP  ####################
-
+*/
 
 static void ATSTOP()
 {
