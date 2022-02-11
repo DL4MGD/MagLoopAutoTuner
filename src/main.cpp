@@ -354,7 +354,7 @@ static void ManuCal()
         lcd.print("Recalibrating......");
         lcd.setCursor(0,1);
         SfZe=myStepper.readSteps();
-
+        valEndSensor=digitalRead(pinEndSensor);
   if (SfZe >= 3900){
           lcd.setCursor(0,3);
           lcd.print("ERROR: No CalSig!");
@@ -382,7 +382,7 @@ static void ATSTART()
   digitalWrite(ms2, HIGH);
   digitalWrite(ms3, LOW);
   lcd.clear();
-  for( int i=3200; i >= 0; i--){
+  for( int i=3200; i != 1; i--){
     valATSTOP=digitalRead(pinATSTOP);
     if (valATSTOP ==0 ){
       myStepper.stop();
@@ -393,7 +393,7 @@ static void ATSTART()
         valFRWD = digitalRead(pinFRWD);
         myStepper.attachEnable( enablePin, 10, HIGH );
         myStepper.setSpeedSteps(SpeedStepsFast);
-        myStepper.doSteps(10000);
+        myStepper.writeSteps(3000);
           valREFPO = analogRead(pinREFPO);
           valFWDPO = analogRead(pinFWDPO);
           valVSWR = (valFWDPO/valREFPO);
@@ -402,11 +402,11 @@ static void ATSTART()
           valSFWD = digitalRead(pinSFWD);
           valSRWD = digitalRead(pinSRWD);
           lcd.setCursor(0,0);
-          lcd.print("Vref=");
+          lcd.print("REF=");
           lcd.print(valREFPO);
           lcd.print("      ");
           lcd.setCursor(0,1);
-          lcd.print("Vfwd=");
+          lcd.print("FWD=");
           lcd.print(valFWDPO);
           lcd.print("      ");
           lcd.setCursor(0,2);
@@ -414,13 +414,13 @@ static void ATSTART()
           lcd.print(valVSWR+1);
           lcd.print("      ");
         SfZe=myStepper.readSteps();
-        lcd.setCursor(0,3);
-        lcd.print("Pos. is:");
-        lcd.setCursor(10,3);
-        lcd.print(SfZe); 
+          lcd.setCursor(0,3);
+          lcd.print("Pos. is:");
+          lcd.setCursor(10,3);
+          lcd.print(SfZe); 
 
 valREFPOaft=digitalRead(pinREFPO);
-if (valREFPOaft < 120){
+if (valREFPOaft ){
   break;
     }
   } 
