@@ -378,85 +378,58 @@ static void ManuCal()
 //############################# START Auto Tuning START ####################
 static void ATSTART()
 {
+  digitalWrite(ms1, LOW);
+  digitalWrite(ms2, HIGH);
+  digitalWrite(ms3, LOW);
   lcd.clear();
   for( int i=3200; i >= 0; i--){
     valATSTOP=digitalRead(pinATSTOP);
     if (valATSTOP ==0 ){
       myStepper.stop();
+      digitalWrite(enablePin, HIGH);  
       lcd.clear();
-      break;
+    break;
     }      
-  digitalWrite(ms1, HIGH);
-  digitalWrite(ms2, HIGH);
-  digitalWrite(ms3, HIGH);
-    myStepper.attachEnable( enablePin, 10, HIGH ); 
-    myStepper.setSpeedSteps(SpeedStepsTune);
-    valREFPObef=analogRead(pinREFPO);
-    myStepper.writeSteps(12000);
-              lcd.setCursor(0,0);
-              lcd.print("Tuning...!");
-              lcd.setCursor(0,1);
-              lcd.print("Reflected:");
-              lcd.setCursor(12,1);
-              lcd.print(valREFPObef);
-              lcd.setCursor(12,1);
-              SfZe=myStepper.readSteps();
-              lcd.setCursor(0,3);
-              lcd.print("Position:");
-              lcd.setCursor(10,3);
-              lcd.print(SfZe);
-
+        valFRWD = digitalRead(pinFRWD);
+        myStepper.attachEnable( enablePin, 10, HIGH );
+        myStepper.setSpeedSteps(SpeedStepsFast);
+        myStepper.doSteps(10000);
+          valREFPO = analogRead(pinREFPO);
+          valFWDPO = analogRead(pinFWDPO);
+          valVSWR = (valFWDPO/valREFPO);
+          valFFWD = digitalRead(pinFFWD);
+          valFRWD = digitalRead(pinFRWD);
+          valSFWD = digitalRead(pinSFWD);
+          valSRWD = digitalRead(pinSRWD);
+          lcd.setCursor(0,0);
+          lcd.print("Vref=");
+          lcd.print(valREFPO);
+          lcd.print("      ");
+          lcd.setCursor(0,1);
+          lcd.print("Vfwd=");
+          lcd.print(valFWDPO);
+          lcd.print("      ");
+          lcd.setCursor(0,2);
+          lcd.print("VSWR=");
+          lcd.print(valVSWR+1);
+          lcd.print("      ");
+        SfZe=myStepper.readSteps();
+        lcd.setCursor(0,3);
+        lcd.print("Pos. is:");
+        lcd.setCursor(10,3);
+        lcd.print(SfZe); 
 
 valREFPOaft=digitalRead(pinREFPO);
-if (valREFPOaft > 100){
+if (valREFPOaft < 120){
   break;
     }
-  }
-lcd.clear();  
+  } 
+lcd.clear();
 }
 
-/*valREFPOaft=digitalRead(pinREFPO);
-if (valREFPOaft >= valREFPObef){
-valREFPOaft=digitalRead(pinREFPO);  
-  for (int i; i >= 200; i--){
-    if (valREFPO < 120){
-     myStepper.setSpeedSteps(SpeedStepsSlow);
-      myStepper.doSteps(-1);
-              lcd.setCursor(0,0);
-              lcd.print("Tuning...!");
-              lcd.setCursor(0,1);
-              lcd.print("Reflected:");
-              lcd.setCursor(12,1);
-              lcd.print(valREFPObef);
-              lcd.setCursor(12,1);
-              SfZe=myStepper.readSteps();
-              lcd.setCursor(0,3);
-              lcd.print("Position:");
-              lcd.setCursor(10,3);
-              lcd.print(SfZe);
-      }
-    }
-  valREFPOaft=digitalRead(pinREFPO);
-  if (valREFPO  < 100){
-              lcd.setCursor(0,0);
-              lcd.print("Tuning...!");
-              lcd.setCursor(0,1);
-              lcd.print("Reflected:");
-              lcd.setCursor(12,1);
-              lcd.print(valREFPObef);
-              lcd.setCursor(12,1);
-              SfZe=myStepper.readSteps();
-              lcd.setCursor(0,3);
-              lcd.print("Position:");
-              lcd.setCursor(10,3);
-              lcd.print(SfZe);
-    break;
-      } 
-    }
-  }     
-}
+
 //############################# STOP Auto Tuning STOP  ####################
-*/
+
 
 static void ATSTOP()
 {
