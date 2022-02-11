@@ -337,7 +337,7 @@ static void ManuCal()
   lcd.clear();
   digitalWrite(ms1, LOW);            
   digitalWrite(ms2, HIGH);            
-  digitalWrite(ms3, LOW); 
+  digitalWrite(ms3, LOW);
   for (int i; i < 4000; i--){
         while (valManuCal == 0){
         valManuCal=digitalRead(pinManuCal);
@@ -383,12 +383,12 @@ static void ATSTART()
       myStepper.stop();
       lcd.clear();
       break;
-    }
-    digitalWrite(ms1, LOW);
-    digitalWrite(ms2, HIGH);
-    digitalWrite(ms3, LOW);
+    }      
+  digitalWrite(ms1, HIGH);
+  digitalWrite(ms2, HIGH);
+  digitalWrite(ms3, HIGH);
     myStepper.attachEnable( enablePin, 10, HIGH ); 
-    myStepper.setSpeedSteps(4000);
+    myStepper.setSpeedSteps(SpeedStepsFast);
     valREFPObef=analogRead(pinREFPO);
     myStepper.writeSteps(12000);
               lcd.setCursor(0,0);
@@ -405,15 +405,40 @@ static void ATSTART()
               lcd.print(SfZe);
 
 valREFPOaft=digitalRead(pinREFPO);
-if (valREFPObef > valREFPOaft){
+if (valREFPObef >= valREFPOaft){
+valREFPOaft=digitalRead(pinREFPO);  
   for (int i; i >= 200; i--){
-    if (valREFPO-20 < 100){
-     myStepper.setSpeedSteps(100);
+    if (valREFPO < 120){
+     myStepper.setSpeedSteps(SpeedStepsSlow);
       myStepper.doSteps(-1);
+              lcd.setCursor(0,0);
+              lcd.print("Tuning...!");
+              lcd.setCursor(0,1);
+              lcd.print("Reflected:");
+              lcd.setCursor(12,1);
+              lcd.print(valREFPObef);
+              lcd.setCursor(12,1);
+              SfZe=myStepper.readSteps();
+              lcd.setCursor(0,3);
+              lcd.print("Position:");
+              lcd.setCursor(10,3);
+              lcd.print(SfZe);
       }
     }
   valREFPOaft=digitalRead(pinREFPO);
   if (valREFPO  < 100){
+              lcd.setCursor(0,0);
+              lcd.print("Tuning...!");
+              lcd.setCursor(0,1);
+              lcd.print("Reflected:");
+              lcd.setCursor(12,1);
+              lcd.print(valREFPObef);
+              lcd.setCursor(12,1);
+              SfZe=myStepper.readSteps();
+              lcd.setCursor(0,3);
+              lcd.print("Position:");
+              lcd.setCursor(10,3);
+              lcd.print(SfZe);
     break;
       } 
     }
