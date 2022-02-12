@@ -352,6 +352,7 @@ static void ManuCal()
   digitalWrite(ms1, LOW);            
   digitalWrite(ms2, HIGH);            
   digitalWrite(ms3, LOW);
+  myStepper.setZero();
   for (int i; i < 4000; i--){
         while (valManuCal == 0){
         valManuCal=digitalRead(pinManuCal);
@@ -364,7 +365,7 @@ static void ManuCal()
         myStepper.setSpeedSteps(30000);     
         myStepper.writeSteps(6000);       
         lcd.setCursor(0,0);
-        lcd.print("Recalibrating......");
+        lcd.print("Searching zero.....");
         lcd.setCursor(0,1);
         SfZe=myStepper.readSteps();
         valEndSensor=digitalRead(pinEndSensor);
