@@ -60,7 +60,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int SpeedStepsFast = 5000;            // Fast stepper turning
   int SpeedStepsSlow = 100;             // Slow stepper turning
   int SpeedStepsTuneFast = 5000;        // Beginn tuning with this speed
-  int SpeedSetpsTuneSlow = 100;         // Finetuning
+  int SpeedStepsTuneSlow = 100;         // Finetuning
   int SfZe = 0;                         // Steps away from Zero position
   int RampLen = 250;                    // Smoothing
   int valEndSensor = 0;                 // Calibrate zero position 
@@ -379,31 +379,39 @@ static void ATSTART()
 lcd.clear();
 
 //------------------------ Tunecycle START ------------------------------    
-myStepper.setSpeed(SpeedStepsTuneFast);
-valREFPO=analogRead(pinREFPO);
-valFFWD=analogRead(pinFFWD);
+
 for (int i; i<3000; i--){
-  if (valREFPO > valFFWD){
   digitalWrite(ms1, LOW);
   digitalWrite(ms2, HIGH);
   digitalWrite(ms3, LOW);
-
+  myStepper.attachEnable( enablePin, 10, HIGH );
+  myStepper.setSpeedSteps(SpeedStepsTuneFast);
+  myStepper.doSteps(3000);
+  valATSTOP=digitalRead(pinATSTOP);
   if (valATSTOP == 0){
     myStepper.stop();
-    digitalWrite(enablePin, HIGH);  
+      digitalWrite(enablePin, HIGH);  
     lcd.clear();
-  break;
+    break;
   }
-    valFRWD = digitalRead(pinFRWD);
+valREFPO=analogRead(pinREFPO);
+valFFWD=analogRead(pinFFWD);
+  if (valREFPO < valFFWD){
+    digitalWrite(ms1, HIGH);
+    digitalWrite(ms2, HIGH);
+    digitalWrite(ms3, HIGH);
     myStepper.attachEnable( enablePin, 10, HIGH );
-    myStepper.setSpeedSteps(SpeedStepsTuneFast);
-    myStepper.doSteps(3000);
-
+    myStepper.setSpeedSteps(SpeedStepsTuneSlow);
+    myStepper.doSteps(-3000);
+  valATSTOP=digitalRead(pinATSTOP);
   if (valATSTOP == 0){
     myStepper.stop();
-    digitalWrite(enablePin, HIGH);  
+      digitalWrite(enablePin, HIGH);  
     lcd.clear();
-  break;
+    break;
+  }
+}
+
 
 //------------------------ Tunecycle STOP ------------------------------
     valREFPO = analogRead(pinREFPO);
@@ -430,8 +438,7 @@ for (int i; i<3000; i--){
     lcd.print("Tuning:");
     lcd.setCursor(10,3);
     lcd.print(SfZe); 
-    } 
-lcd.clear();
+    lcd.clear();
   }
 }
 //############################# STOP Auto Tuning STOP  ####################
