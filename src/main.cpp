@@ -59,7 +59,8 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valCurrentSpeed = 0;              // Save current speed setting
   int SpeedStepsFast = 5000;            // Fast stepper turning
   int SpeedStepsSlow = 100;             // Slow stepper turning
-  int SpeedStepsTune = 3500;            // Beginn tuning with this speed
+  int SpeedStepsTuneFast = 5000;        // Beginn tuning with this speed
+  int SpeedSetpsTuneSlow = 100;         // Finetuning
   int SfZe = 0;                         // Steps away from Zero position
   int RampLen = 250;                    // Smoothing
   int valEndSensor = 0;                 // Calibrate zero position 
@@ -375,63 +376,36 @@ static void ManuCal()
 //############################# START Auto Tuning START ####################
 static void ATSTART()
 {
-digitalWrite(ms1, LOW);
-digitalWrite(ms2, HIGH);
-digitalWrite(ms3, LOW);
 lcd.clear();
-  for( int i=3200; i != 1; i--){
-    valFRWD = analogRead(pinFRWD);
-    valREFPObef = analogRead(pinREFPO);
-    myStepper.attachEnable( enablePin, 10, HIGH );
-    myStepper.setSpeedSteps(SpeedStepsFast);
-    myStepper.writeSteps(6000);
-    valATSTOP=digitalRead(pinATSTOP);
+
+//------------------------ Tunecycle START ------------------------------    
+myStepper.setSpeed(SpeedStepsTuneFast);
+valREFPO=analogRead(pinREFPO);
+valFFWD=analogRead(pinFFWD);
+for (int i; i<3000; i--){
+  if (valREFPO > valFFWD){
+  digitalWrite(ms1, LOW);
+  digitalWrite(ms2, HIGH);
+  digitalWrite(ms3, LOW);
+
   if (valATSTOP == 0){
     myStepper.stop();
     digitalWrite(enablePin, HIGH);  
     lcd.clear();
   break;
-    }
-//------------------------ Tunecycle ------------------------------    
- valREFPOaft=analogRead(pinREFPO);
-  while (valREFPOaft > valREFPObef){
-    valREFPOaft=analogRead(pinREFPO);    
-
-    digitalWrite(ms1, LOW);
-    digitalWrite(ms2, HIGH);
-    digitalWrite(ms3, LOW);
-
-    myStepper.setSpeed(SpeedStepsFast);
-    valREFPOaft=analogRead(pinREFPO);
-    valATSTOP=digitalRead(pinATSTOP);
-  if (valATSTOP == 0){
-    myStepper.stop();
-    digitalWrite(enablePin, HIGH);  
-    lcd.clear();
-  break;
-    
-    }    
-valREFPOaft=analogRead(pinREFPO);    
-  while (valREFPOaft > 100){
-    valREFPOaft=analogRead(pinREFPO);
-    
-    digitalWrite(ms1, HIGH);
-    digitalWrite(ms2, HIGH);
-    digitalWrite(ms3, HIGH);
-
-    myStepper.attachEnable( enablePin, 10, HIGH );
-    myStepper.setSpeedSteps(SpeedStepsTune);
-    myStepper.writeSteps(-6000);
-    valATSTOP=digitalRead(pinATSTOP);      
-  if (valATSTOP == 0){
-    myStepper.stop();
-    digitalWrite(enablePin, HIGH);  
-    lcd.clear();
-  break;
-    }
   }
-}      
-//------------------------ Tunecycle ------------------------------
+    valFRWD = digitalRead(pinFRWD);
+    myStepper.attachEnable( enablePin, 10, HIGH );
+    myStepper.setSpeedSteps(SpeedStepsTuneFast);
+    myStepper.doSteps(3000);
+
+  if (valATSTOP == 0){
+    myStepper.stop();
+    digitalWrite(enablePin, HIGH);  
+    lcd.clear();
+  break;
+
+//------------------------ Tunecycle STOP ------------------------------
     valREFPO = analogRead(pinREFPO);
     valFWDPO = analogRead(pinFWDPO);
     valVSWR = (valFWDPO/valREFPO);
@@ -453,11 +427,12 @@ valREFPOaft=analogRead(pinREFPO);
     lcd.print("      ");
     SfZe=myStepper.readSteps();
     lcd.setCursor(0,3);
-    lcd.print("Pos. is:");
+    lcd.print("Tuning:");
     lcd.setCursor(10,3);
     lcd.print(SfZe); 
-  } 
+    } 
 lcd.clear();
+  }
 }
 //############################# STOP Auto Tuning STOP  ####################
 
