@@ -59,7 +59,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valVSWR = 0;                      // VSWR
   int valREFPObef = 0;                  // Reflected power value before a tuning step
   int valREFPOaft = 0;                  // Refrectec power value after a tuning step
-  int CompFWRW = 0);                    // Compare save value once
+  int CompFwRw = 0;                     // Compare save value once
   int valSpeedSteps = 0;                //
   int valCurrentSpeed = 0;              // Save current speed setting
   int SpeedStepsFast = 5000;            // Fast stepper turning
@@ -394,7 +394,7 @@ valFWDPO=analogRead(pinFWDPO);
 digitalWrite(pinRelais0, HIGH);
 delay(100);
 digitalWrite(pinRelais1, HIGH);
-CompFWRW=analogRead(pinREFPO);
+CompFwRw=analogRead(pinREFPO);
 
 while (valREFPO > 1){
     digitalWrite(ms1, LOW);
