@@ -409,7 +409,7 @@ break;
     valFWDPO=analogRead(pinFWDPO);
     valATSTOP=digitalRead(pinATSTOP);
     myStepper.attachEnable( enablePin, 10, HIGH ); 
-    myStepper.setSpeedSteps(SpeedStepsFast);
+    myStepper.setSpeedSteps(SpeedStepsTuneFast);
     myStepper.doSteps(3000);
 valREFPO=analogRead(pinREFPO);
   while (valREFPO < 100){
@@ -443,8 +443,8 @@ valREFPO=analogRead(pinREFPO);
     lcd.setCursor(10,3);
     lcd.print(SfZe); 
    
-    valREFPO=analogRead(pinREFPO);
-  if (valREFPO < 20){
+    valREFPOaft=analogRead(pinREFPO);
+  if (valREFPOaft < 10){
     myStepper.stop();
     digitalWrite(enablePin, HIGH);
     digitalWrite(pinRelais0, LOW);
@@ -452,6 +452,7 @@ valREFPO=analogRead(pinREFPO);
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("Tuned");
+    delay(2000);
   break;
   }
   
