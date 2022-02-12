@@ -33,10 +33,14 @@ Loop-Parameters: Min. capacity = 9.568 MHz
   const int pinMaxIN = A12;             // Lowest frequency
   const int pinMaxOUT = A13;            // highest frequency
   const int pinPosSetZero = A14;        // Mobatools set zero
-  const int pinManuCal = A15;             // Undefined jet
+  const int pinManuCal = A15;           // Undefined jet
   const int pinEndSensor = A5;          // Zero detector
+  const int pinRelais0 = A4;            // Reilais 0
+  const int pinRelais1 = A3;            // Reilais 1
+
 MoToStepper myStepper ( 200, STEPDIR );
 LiquidCrystal_I2C lcd(0x27,20,4);
+
   int pinREFPO = A1;                    // Pin, to read reflected power
   int pinFWDPO = A0;                    // Pin, to read forward power 
   int val = 0;                          // Variable, to store analog value of A3
@@ -55,6 +59,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valVSWR = 0;                      // VSWR
   int valREFPObef = 0;                  // Reflected power value before a tuning step
   int valREFPOaft = 0;                  // Refrectec power value after a tuning step
+  int CompFWRW = 0);                    // Compare save value once
   int valSpeedSteps = 0;                //
   int valCurrentSpeed = 0;              // Save current speed setting
   int SpeedStepsFast = 5000;            // Fast stepper turning
@@ -84,6 +89,10 @@ void setup() {
   pinMode(pinPosSetZero, INPUT_PULLUP);
   pinMode(pinManuCal, INPUT_PULLUP);
   pinMode(pinEndSensor, INPUT_PULLUP);
+  pinMode(pinRelais0, INPUT_PULLUP);
+  digitalWrite(pinRelais0, LOW);
+  pinMode(pinRelais1, INPUT_PULLUP);
+  digitalWrite(pinRelais1, LOW);
 
   lcd.init();
   lcd.backlight();
@@ -127,7 +136,10 @@ void setup() {
 
 static void FFWD()
 {
-lcd.clear();   
+lcd.clear();
+digitalWrite(pinRelais0, HIGH);
+digitalWrite(pinRelais1, HIGH);
+
       while (valFFWD == 0){
   digitalWrite(ms1, LOW);
   digitalWrite(ms2, HIGH);
@@ -379,7 +391,15 @@ static void ATSTART()
 lcd.clear();
 valREFPO=analogRead(pinREFPO);
 valFWDPO=analogRead(pinFWDPO);
+digitalWrite(pinRelais0, HIGH);
+delay(100);
+digitalWrite(pinRelais1, HIGH);
+CompFWRW=analogRead(pinREFPO);
+
 while (valREFPO > 1){
+    digitalWrite(ms1, LOW);
+    digitalWrite(ms2, HIGH);
+    digitalWrite(ms3, LOW);
   if (valATSTOP == 0){
     myStepper.stop();
     digitalWrite(enablePin, HIGH);  
@@ -399,6 +419,42 @@ valREFPO=analogRead(pinREFPO);
     myStepper.attachEnable( enablePin, 10, HIGH ); 
     myStepper.setSpeedSteps(SpeedStepsSlow);
     myStepper.doSteps(-10000);
+
+    valVSWR = (valFWDPO/valREFPO);
+    valFFWD = digitalRead(pinFFWD);
+    valFRWD = digitalRead(pinFRWD);
+    valSFWD = digitalRead(pinSFWD);
+    valSRWD = digitalRead(pinSRWD);
+    lcd.setCursor(0,0);
+    lcd.print("Vref=");
+    lcd.print(valREFPO);
+    lcd.print("      ");
+    lcd.setCursor(0,1);
+    lcd.print("Vfwd=");
+    lcd.print(valFWDPO);
+    lcd.print("      ");
+    lcd.setCursor(0,2);
+    lcd.print("VSWR=");
+    lcd.print(valVSWR+1);
+    lcd.print("      ");
+    SfZe=myStepper.readSteps();
+    lcd.setCursor(0,3);
+    lcd.print("Position:");
+    lcd.setCursor(10,3);
+    lcd.print(SfZe); 
+   
+    valREFPO=analogRead(pinREFPO);
+  if (valREFPO < 20){
+    myStepper.stop();
+    digitalWrite(enablePin, HIGH);
+    digitalWrite(pinRelais0, LOW);
+    digitalWrite(pinRelais1, LOW);
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Tuned");
+  break;
+  }
+  
   }
 valREFPO=analogRead(pinREFPO);
   if (valREFPO < 80){
