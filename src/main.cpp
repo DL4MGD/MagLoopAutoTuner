@@ -386,7 +386,7 @@ static void ManuCal()
         
   }     
  }
-//############################# START Auto Tuning START ####################
+//############################# START Tuningcycles START ####################
 static void ATSTART()
 {
 lcd.clear();
@@ -403,7 +403,9 @@ while (valREFPO > 1){
     digitalWrite(ms3, LOW);
   if (valATSTOP == 0){
     myStepper.stop();
-    digitalWrite(enablePin, HIGH);  
+    digitalWrite(enablePin, HIGH);
+    digitalWrite(pinRelais0, LOW);
+    digitalWrite(pinRelais1, LOW);
 break;
   }
     valREFPO=analogRead(pinREFPO);
@@ -414,6 +416,15 @@ break;
     myStepper.doSteps(3000);
 valREFPO=analogRead(pinREFPO);
   while (valREFPO < 100){
+
+  if (valATSTOP == 0){
+    myStepper.stop();
+    digitalWrite(enablePin, HIGH);
+    digitalWrite(pinRelais0, LOW);
+    digitalWrite(pinRelais1, LOW);
+break;
+  }
+
     digitalWrite(ms1, HIGH);
     digitalWrite(ms2, HIGH);
     digitalWrite(ms3, HIGH);
@@ -446,6 +457,13 @@ valREFPO=analogRead(pinREFPO);
    
     valREFPOaft=analogRead(pinREFPO);
   if (valREFPOaft < 10){
+  if (valATSTOP == 0){
+    myStepper.stop();
+    digitalWrite(enablePin, HIGH);
+    digitalWrite(pinRelais0, LOW);
+    digitalWrite(pinRelais1, LOW);
+break;
+  }    
     myStepper.stop();
     digitalWrite(enablePin, HIGH);
     digitalWrite(pinRelais0, LOW);
@@ -492,7 +510,7 @@ lcd.print(SfZe);
   }
 lcd.clear();
 }
-//############################# STOP Auto Tuning STOP  ####################
+//############################# STOP Tuningcycles STOP  ####################
 
 static void ATSTOP()
 {
