@@ -59,7 +59,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valCurrentSpeed = 0;              // Save current speed setting
   int SpeedStepsFast = 5000;            // Fast stepper turning
   int SpeedStepsSlow = 100;             // Slow stepper turning
-  int SpeedStepsTuneFast = 5000;        // Beginn tuning with this speed
+  int SpeedStepsTuneFast = 3500;        // Beginn tuning with this speed
   int SpeedStepsTuneSlow = 100;         // Finetuning
   int SfZe = 0;                         // Steps away from Zero position
   int RampLen = 250;                    // Smoothing
@@ -246,9 +246,9 @@ static void SRWD()
 {
 lcd.clear(); 
       while (valSRWD == 0){
-  digitalWrite(ms1, HIGH);
+  digitalWrite(ms1, LOW);
   digitalWrite(ms2, HIGH);
-  digitalWrite(ms3, HIGH);
+  digitalWrite(ms3, LOW);
         valSRWD = digitalRead(pinSRWD);
         myStepper.attachEnable( enablePin, 10, HIGH ); 
         myStepper.setSpeedSteps(SpeedStepsSlow);
@@ -377,76 +377,69 @@ static void ManuCal()
 static void ATSTART()
 {
 lcd.clear();
-
-//------------------------ Tunecycle START ------------------------------    
-
-for (int i; i<3000; i--){
-  digitalWrite(ms1, LOW);
-  digitalWrite(ms2, HIGH);
-  digitalWrite(ms3, LOW);
-  myStepper.attachEnable( enablePin, 10, HIGH );
-  myStepper.setSpeedSteps(SpeedStepsTuneFast);
-  myStepper.doSteps(3000);
-  valATSTOP=digitalRead(pinATSTOP);
+valREFPO=analogRead(pinREFPO);
+valFWDPO=analogRead(pinFWDPO);
+while (valREFPO > 1){
   if (valATSTOP == 0){
     myStepper.stop();
-      digitalWrite(enablePin, HIGH);  
-    lcd.clear();
-    break;
+    digitalWrite(enablePin, HIGH);  
+break;
   }
+    valREFPO=analogRead(pinREFPO);
+    valFWDPO=analogRead(pinFWDPO);
+    valATSTOP=digitalRead(pinATSTOP);
+    myStepper.attachEnable( enablePin, 10, HIGH ); 
+    myStepper.setSpeedSteps(SpeedStepsFast);
+    myStepper.doSteps(3000);
 valREFPO=analogRead(pinREFPO);
-valFFWD=analogRead(pinFFWD);
-  if (valREFPO < valFFWD){
+  while (valREFPO < 100){
     digitalWrite(ms1, HIGH);
     digitalWrite(ms2, HIGH);
     digitalWrite(ms3, HIGH);
-    myStepper.attachEnable( enablePin, 10, HIGH );
-    myStepper.setSpeedSteps(SpeedStepsTuneSlow);
-    myStepper.doSteps(-3000);
-  valATSTOP=digitalRead(pinATSTOP);
-  if (valATSTOP == 0){
+    myStepper.attachEnable( enablePin, 10, HIGH ); 
+    myStepper.setSpeedSteps(SpeedStepsSlow);
+    myStepper.doSteps(-10000);
+  }
+valREFPO=analogRead(pinREFPO);
+  if (valREFPO < 80){
     myStepper.stop();
-      digitalWrite(enablePin, HIGH);  
-    lcd.clear();
+    digitalWrite(enablePin, HIGH);
     break;
   }
-}
-
-
-//------------------------ Tunecycle STOP ------------------------------
-    valREFPO = analogRead(pinREFPO);
-    valFWDPO = analogRead(pinFWDPO);
-    valVSWR = (valFWDPO/valREFPO);
-    valFFWD = digitalRead(pinFFWD);
-    valFRWD = digitalRead(pinFRWD);
-    valSFWD = digitalRead(pinSFWD);
-    valSRWD = digitalRead(pinSRWD);
-    lcd.setCursor(0,0);
-    lcd.print("REF=");
-    lcd.print(valREFPO);
-    lcd.print("      ");
-    lcd.setCursor(0,1);
-    lcd.print("FWD=");
-    lcd.print(valFWDPO);
-    lcd.print("      ");
-    lcd.setCursor(0,2);
-    lcd.print("VSWR=");
-    lcd.print(valVSWR+1);
-    lcd.print("      ");
-    SfZe=myStepper.readSteps();
-    lcd.setCursor(0,3);
-    lcd.print("Tuning:");
-    lcd.setCursor(10,3);
-    lcd.print(SfZe); 
-    lcd.clear();
+  
+valREFPO = analogRead(pinREFPO);
+valFWDPO = analogRead(pinFWDPO);
+valVSWR = (valFWDPO/valREFPO);
+valFFWD = digitalRead(pinFFWD);
+valFRWD = digitalRead(pinFRWD);
+valSFWD = digitalRead(pinSFWD);
+valSRWD = digitalRead(pinSRWD);
+lcd.setCursor(0,0);
+lcd.print("Vref=");
+lcd.print(valREFPO);
+lcd.print("      ");
+lcd.setCursor(0,1);
+lcd.print("Vfwd=");
+lcd.print(valFWDPO);
+lcd.print("      ");
+lcd.setCursor(0,2);
+lcd.print("VSWR=");
+lcd.print(valVSWR+1);
+lcd.print("      ");
+SfZe=myStepper.readSteps();
+lcd.setCursor(0,3);
+lcd.print("Tuning:");
+lcd.setCursor(10,3);
+lcd.print(SfZe); 
   }
+lcd.clear();
 }
 //############################# STOP Auto Tuning STOP  ####################
-
 
 static void ATSTOP()
 {
 }
+
 
 
 void loop()
