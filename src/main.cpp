@@ -445,7 +445,7 @@ valREFPO=analogRead(pinREFPO);
     lcd.print(SfZe); 
    
     valREFPOaft=analogRead(pinREFPO);
-  if (valREFPOaft < 10){
+  if (valREFPOaft < 20){
     myStepper.stop();
     digitalWrite(enablePin, HIGH);
     digitalWrite(pinRelais0, LOW);
@@ -453,8 +453,8 @@ valREFPO=analogRead(pinREFPO);
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("Tuned");
+    break;
     delay(2000);
-  break;
   }
   
   }
