@@ -69,7 +69,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int SfZe = 0;                         // Steps away from Zero position
   int RampLen = 250;                    // Smoothing
   int valEndSensor = 0;                 // Calibrate zero position 
-
+  int Count = 0;                        // Counter
 void setup() {
   pinMode(stepPin, OUTPUT); 
   pinMode(dirPin, OUTPUT);
@@ -137,9 +137,6 @@ void setup() {
 static void FFWD()
 {
 lcd.clear();
-digitalWrite(pinRelais0, HIGH);
-digitalWrite(pinRelais1, HIGH);
-
       while (valFFWD == 0){
   digitalWrite(ms1, LOW);
   digitalWrite(ms2, HIGH);
@@ -451,7 +448,7 @@ break;
     lcd.print("      ");
     SfZe=myStepper.readSteps();
     lcd.setCursor(0,3);
-    lcd.print("Position:");
+    lcd.print("Tuning:");
     lcd.setCursor(10,3);
     lcd.print(SfZe); 
    
