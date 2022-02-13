@@ -69,7 +69,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int SfZe = 0;                         // Steps away from Zero position
   int RampLen = 250;                    // Smoothing
   int valEndSensor = 0;                 // Calibrate zero position 
-  int Count = 0;                        // Counter
+
 void setup() {
   pinMode(stepPin, OUTPUT); 
   pinMode(dirPin, OUTPUT);
@@ -137,6 +137,9 @@ void setup() {
 static void FFWD()
 {
 lcd.clear();
+digitalWrite(pinRelais0, HIGH);
+digitalWrite(pinRelais1, HIGH);
+
       while (valFFWD == 0){
   digitalWrite(ms1, LOW);
   digitalWrite(ms2, HIGH);
@@ -383,7 +386,7 @@ static void ManuCal()
         
   }     
  }
-//############################# START Tuningcycles START ####################
+//############################# START Auto Tuning START ####################
 static void ATSTART()
 {
 lcd.clear();
@@ -400,9 +403,7 @@ while (valREFPO > 1){
     digitalWrite(ms3, LOW);
   if (valATSTOP == 0){
     myStepper.stop();
-    digitalWrite(enablePin, HIGH);
-    digitalWrite(pinRelais0, LOW);
-    digitalWrite(pinRelais1, LOW);
+    digitalWrite(enablePin, HIGH);  
 break;
   }
     valREFPO=analogRead(pinREFPO);
@@ -413,15 +414,6 @@ break;
     myStepper.doSteps(3000);
 valREFPO=analogRead(pinREFPO);
   while (valREFPO < 100){
-
-  if (valATSTOP == 0){
-    myStepper.stop();
-    digitalWrite(enablePin, HIGH);
-    digitalWrite(pinRelais0, LOW);
-    digitalWrite(pinRelais1, LOW);
-break;
-  }
-
     digitalWrite(ms1, HIGH);
     digitalWrite(ms2, HIGH);
     digitalWrite(ms3, HIGH);
@@ -448,19 +440,12 @@ break;
     lcd.print("      ");
     SfZe=myStepper.readSteps();
     lcd.setCursor(0,3);
-    lcd.print("Tuning:");
+    lcd.print("Position:");
     lcd.setCursor(10,3);
     lcd.print(SfZe); 
    
     valREFPOaft=analogRead(pinREFPO);
   if (valREFPOaft < 10){
-  if (valATSTOP == 0){
-    myStepper.stop();
-    digitalWrite(enablePin, HIGH);
-    digitalWrite(pinRelais0, LOW);
-    digitalWrite(pinRelais1, LOW);
-break;
-  }    
     myStepper.stop();
     digitalWrite(enablePin, HIGH);
     digitalWrite(pinRelais0, LOW);
@@ -507,7 +492,7 @@ lcd.print(SfZe);
   }
 lcd.clear();
 }
-//############################# STOP Tuningcycles STOP  ####################
+//############################# STOP Auto Tuning STOP  ####################
 
 static void ATSTOP()
 {
