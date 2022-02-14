@@ -64,7 +64,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valCurrentSpeed = 0;              // Save current speed setting
   int SpeedStepsFast = 5000;            // Fast stepper turning
   int SpeedStepsSlow = 100;             // Slow stepper turning
-  int SpeedStepsTuneFast = 3500;        // Beginn tuning with this speed
+  int SpeedStepsTuneFast = 3000;        // Beginn tuning with this speed
   int SpeedStepsTuneSlow = 100;         // Finetuning
   int SfZe = 0;                         // Steps away from Zero position
   int RampLen = 250;                    // Smoothing
