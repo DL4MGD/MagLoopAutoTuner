@@ -386,6 +386,7 @@ static void ManuCal()
 //############################# START Auto Tuning START ####################
 static void ATSTART()
 {
+
 lcd.clear();
 valREFPO=analogRead(pinREFPO);
 valFWDPO=analogRead(pinFWDPO);
