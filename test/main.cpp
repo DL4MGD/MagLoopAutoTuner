@@ -370,8 +370,6 @@ static void Spare()
          
   }     
  }
-        
-
 
 //############################# START Auto Tuning START ####################
 static void ATSTART()
@@ -380,6 +378,9 @@ static void ATSTART()
   for( int i=10000; i >= 0; i--){
     valATSTOP=digitalRead(pinATSTOP);
     if (valATSTOP ==0 ){
+    digitalWrite(enablePin, HIGH);
+    digitalWrite(pinRelais0, LOW);
+    digitalWrite(pinRelais1, LOW);
       myStepper.stop();
       lcd.clear();
       break;
@@ -403,9 +404,16 @@ static void ATSTART()
               lcd.print("Position:");
               lcd.setCursor(10,3);
               lcd.print(SfZe);
-
 valREFPOaft=digitalRead(pinREFPO);
 if (valREFPObef > valREFPOaft){
+    if (valATSTOP ==0 ){
+    digitalWrite(enablePin, HIGH);
+    digitalWrite(pinRelais0, LOW);
+    digitalWrite(pinRelais1, LOW);
+      myStepper.stop();
+      lcd.clear();
+      break;
+    }
   for (int i; i >= 200; i--){
     if (valREFPO-20 < 100){
      myStepper.setSpeedSteps(100);

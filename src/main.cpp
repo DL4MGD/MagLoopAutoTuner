@@ -396,13 +396,25 @@ digitalWrite(pinRelais1, HIGH);
 CompFwRw=analogRead(pinREFPO);
 
 while (valREFPO > 1){
+
+  if (valATSTOP == 0){
+    myStepper.stop();
+    digitalWrite(enablePin, HIGH);
+    digitalWrite(pinRelais0, LOW);
+    digitalWrite(pinRelais1, LOW);      
+  break;
+  }
+
     digitalWrite(ms1, LOW);
     digitalWrite(ms2, HIGH);
     digitalWrite(ms3, LOW);
   if (valATSTOP == 0){
     myStepper.stop();
-    digitalWrite(enablePin, HIGH);  
-break;
+    digitalWrite(enablePin, HIGH);
+    digitalWrite(enablePin, HIGH);
+    digitalWrite(pinRelais0, LOW);
+    digitalWrite(pinRelais1, LOW);  
+  break;
   }
     valREFPO=analogRead(pinREFPO);
     valFWDPO=analogRead(pinFWDPO);
@@ -412,6 +424,15 @@ break;
     myStepper.doSteps(3000);
 valREFPO=analogRead(pinREFPO);
   while (valREFPO < 100){
+
+  if (valATSTOP == 0){
+    myStepper.stop();
+    digitalWrite(enablePin, HIGH);  
+    digitalWrite(pinRelais0, LOW);
+    digitalWrite(pinRelais1, LOW);
+  break;
+  }
+
     digitalWrite(ms1, HIGH);
     digitalWrite(ms2, HIGH);
     digitalWrite(ms3, HIGH);
@@ -460,6 +481,8 @@ valREFPO=analogRead(pinREFPO);
   if (valREFPO < 80){
     myStepper.stop();
     digitalWrite(enablePin, HIGH);
+    digitalWrite(pinRelais0, LOW);
+    digitalWrite(pinRelais1, LOW);
     break;
   }
   
@@ -487,7 +510,15 @@ lcd.setCursor(0,3);
 lcd.print("Tuning:");
 lcd.setCursor(10,3);
 lcd.print(SfZe); 
+
+  if (valATSTOP == 0){
+    myStepper.stop();
+    digitalWrite(enablePin, HIGH);
+    digitalWrite(pinRelais0, LOW);
+    digitalWrite(pinRelais1, LOW);      
+  break;
   }
+}
 lcd.clear();
 }
 //############################# STOP Auto Tuning STOP  ####################
