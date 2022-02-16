@@ -386,7 +386,6 @@ static void ManuCal()
 //############################# START Auto Tuning START ####################
 static void ATSTART()
 {
-
 lcd.clear();
 valREFPO=analogRead(pinREFPO);
 valFWDPO=analogRead(pinFWDPO);
@@ -394,9 +393,7 @@ digitalWrite(pinRelais0, HIGH);
 delay(100);
 digitalWrite(pinRelais1, HIGH);
 CompFwRw=analogRead(pinREFPO);
-
 while (valREFPO > 1){
-
   if (valATSTOP == 0){
     myStepper.stop();
     digitalWrite(enablePin, HIGH);
@@ -432,14 +429,19 @@ valREFPO=analogRead(pinREFPO);
     digitalWrite(pinRelais1, LOW);
   break;
   }
-
+  if (valATSTOP == 0){
+    myStepper.stop();
+    digitalWrite(enablePin, HIGH);
+    digitalWrite(pinRelais0, LOW);
+    digitalWrite(pinRelais1, LOW);      
+  break;
+  }
     digitalWrite(ms1, HIGH);
     digitalWrite(ms2, HIGH);
     digitalWrite(ms3, HIGH);
     myStepper.attachEnable( enablePin, 10, HIGH ); 
     myStepper.setSpeedSteps(SpeedStepsSlow);
     myStepper.doSteps(-10000);
-
     valVSWR = (valFWDPO/valREFPO);
     valFFWD = digitalRead(pinFFWD);
     valFRWD = digitalRead(pinFRWD);
@@ -462,9 +464,15 @@ valREFPO=analogRead(pinREFPO);
     lcd.print("Position:");
     lcd.setCursor(10,3);
     lcd.print(SfZe); 
-   
     valREFPOaft=analogRead(pinREFPO);
   if (valREFPOaft < 15){
+  if (valATSTOP == 0){
+    myStepper.stop();
+    digitalWrite(enablePin, HIGH);
+    digitalWrite(pinRelais0, LOW);
+    digitalWrite(pinRelais1, LOW);      
+  break;
+  }
     myStepper.stop();
     digitalWrite(enablePin, HIGH);
     digitalWrite(pinRelais0, LOW);
@@ -475,17 +483,29 @@ valREFPO=analogRead(pinREFPO);
     break;
     delay(2000);
   }
-  
+  if (valATSTOP == 0){
+    myStepper.stop();
+    digitalWrite(enablePin, HIGH);
+    digitalWrite(pinRelais0, LOW);
+    digitalWrite(pinRelais1, LOW);      
+  break;
+  }  
   }
 valREFPO=analogRead(pinREFPO);
   if (valREFPO < 80){
+  if (valATSTOP == 0){
+    myStepper.stop();
+    digitalWrite(enablePin, HIGH);
+    digitalWrite(pinRelais0, LOW);
+    digitalWrite(pinRelais1, LOW);      
+  break;
+  }
     myStepper.stop();
     digitalWrite(enablePin, HIGH);
     digitalWrite(pinRelais0, LOW);
     digitalWrite(pinRelais1, LOW);
     break;
   }
-  
 valREFPO = analogRead(pinREFPO);
 valFWDPO = analogRead(pinFWDPO);
 valVSWR = (valFWDPO/valREFPO);
@@ -526,9 +546,6 @@ lcd.clear();
 static void ATSTOP()
 {
 }
-
-
-
 void loop()
 {
       valFFWD = digitalRead(pinFFWD);
@@ -585,8 +602,6 @@ void loop()
         delay(15);        
         ManuCal();
       }
-
-
 lcd.setCursor(0,0);
 valREFPO = analogRead(pinREFPO);
 valFWDPO = analogRead(pinFWDPO);
