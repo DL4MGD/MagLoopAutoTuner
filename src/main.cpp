@@ -30,7 +30,7 @@ Loop-Parameters: Min. capacity = 9.568 MHz
   const int pinSRWD = A9;               // Switch slow reward
   const int pinATSTART = A10;           // Autotune start
   const int pinATSTOP = A11;            // Autotune stop
-  const int pinMaxIN = A12;             // Lowest frequency
+  const int pinPTT = A12;             // Lowest frequency
   const int pinMaxOUT = A13;            // highest frequency
   const int pinPosSetZero = A14;        // Mobatools set zero
   const int pinManuCal = A15;           // Undefined jet
@@ -50,7 +50,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valSRWD = 0;                      // Manual slow reward
   int valATSTART = 0;                   // Manual start autotune
   int valATSTOP = 0;                    // Manual stop autotune
-  int valMaxIN = 0;                     // Maximal Capacity 
+  int valPTT = 0;                     // Maximal Capacity 
   int valMaxOUT = 0;                    // Minimal Capacity
   int valPosSetZero = 0;                // Mobatools set zero
   int valManuCal = 0;                     // Undefined jet
@@ -84,7 +84,7 @@ void setup() {
   pinMode(pinSRWD, INPUT_PULLUP);
   pinMode(pinATSTART, INPUT_PULLUP);
   pinMode(pinATSTOP, INPUT_PULLUP);
-  pinMode(pinMaxIN, INPUT_PULLUP);
+  pinMode(pinPTT, INPUT_PULLUP);
   pinMode(pinMaxOUT, INPUT_PULLUP);
   pinMode(pinPosSetZero, INPUT_PULLUP);
   pinMode(pinManuCal, INPUT_PULLUP);
@@ -288,25 +288,34 @@ lcd.clear();
         lcd.print(SfZe);
         }
 }
-static void MaxIN()
+static void PTT()
 {
   lcd.clear();
-  while (valMaxIN == 0){
-        valMaxIN=digitalRead(pinMaxIN);
-        digitalWrite(ms1, LOW);
-        digitalWrite(ms2, HIGH);
-        digitalWrite(ms3, LOW);
-        myStepper.attachEnable( enablePin, 10, HIGH );
-        myStepper.setSpeedSteps(36000);
-        myStepper.writeSteps(3000);
-        lcd.setCursor(0,0);
-        lcd.print("Going to pos!");
-        SfZe=myStepper.readSteps();
-        lcd.setCursor(0,1);
-        lcd.print("Position:");
-        lcd.setCursor(10,1);
-        lcd.print(SfZe);
+  while (valPTT == 0){
+        valPTT=digitalRead(pinPTT);
+        digitalWrite(pinRelais0, HIGH);
+        delay(25);
+        digitalWrite(pinRelais1, HIGH);
+          valREFPO = analogRead(pinREFPO);
+          valFWDPO = analogRead(pinFWDPO);
+          valVSWR = (valFWDPO/valREFPO);
+          lcd.setCursor(0,0);
+          lcd.print("Vref=");
+          lcd.print(valREFPO);
+          lcd.print("      ");
+          lcd.setCursor(0,1);
+          lcd.print("Vfwd=");
+          lcd.print(valFWDPO);
+          lcd.print("      ");
+          lcd.setCursor(0,2);
+          lcd.print("VSWR=");
+          lcd.print(valVSWR+1);
+          lcd.print("      ");
+          lcd.setCursor(0,3);
+          lcd.print("On AIR !");
     }
+  digitalWrite(pinRelais0, LOW);
+  digitalWrite(pinRelais1, LOW);    
   lcd.clear();
 }
 static void MaxOUT()
@@ -534,10 +543,10 @@ void loop()
           delay(15);        
           ATSTOP();
       }
-      valMaxIN = digitalRead(pinMaxIN);
-      if (valMaxIN == 0){
+      valPTT = digitalRead(pinPTT);
+      if (valPTT == 0){
         delay(15);
-        MaxIN();
+        PTT();
       }
      valMaxOUT = digitalRead(pinMaxOUT);
       if (valMaxOUT == 0){
