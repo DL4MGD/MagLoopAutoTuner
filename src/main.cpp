@@ -1,5 +1,5 @@
 /*
-Version: 1.01
+Version: 1.02
 Magloop Automatic Controller-Firmware
 Arduino Mega 2560 and A4988 Stepper Driver
 Author: Michael Poschner (DL4MGD)
@@ -311,7 +311,7 @@ static void PTT()
           lcd.print("VSWR=");
           lcd.print(valVSWR+1);
           lcd.print("      ");
-          lcd.setCursor(0,3);
+          lcd.setCursor(12,3);
           lcd.print("On AIR !");
     }
   digitalWrite(pinRelais0, LOW);
@@ -409,7 +409,9 @@ while (valREFPO > 1){
     digitalWrite(ms3, LOW);
   if (valATSTOP == 0){
     myStepper.stop();
-    digitalWrite(enablePin, HIGH);  
+    digitalWrite(enablePin, HIGH); 
+    digitalWrite(pinRelais0, LOW) ;
+    digitalWrite(pinRelais1, LOW);
 break;
   }
     valREFPO=analogRead(pinREFPO);
@@ -418,8 +420,22 @@ break;
     myStepper.attachEnable( enablePin, 10, HIGH ); 
     myStepper.setSpeedSteps(SpeedStepsTuneFast);
     myStepper.doSteps(3000);
-valREFPO=analogRead(pinREFPO);
+    valREFPO=analogRead(pinREFPO);
   while (valREFPO < 100){
+  if (valATSTOP == 0){
+    myStepper.stop();
+    digitalWrite(enablePin, HIGH); 
+    digitalWrite(pinRelais0, LOW) ;
+    digitalWrite(pinRelais1, LOW);
+  break;
+  }
+  if (valATSTOP == 0){
+    myStepper.stop();
+    digitalWrite(enablePin, HIGH); 
+    digitalWrite(pinRelais0, LOW) ;
+    digitalWrite(pinRelais1, LOW);
+  break;
+  }
     digitalWrite(ms1, HIGH);
     digitalWrite(ms2, HIGH);
     digitalWrite(ms3, HIGH);
