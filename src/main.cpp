@@ -30,7 +30,7 @@ Loop-Parameters: Min. capacity = 9.568 MHz
   const int pinSRWD = A9;               // Switch slow reward
   const int pinATSTART = A10;           // Autotune start
   const int pinATSTOP = A11;            // Autotune stop
-  const int pinPTT = A12;             // Lowest frequency
+  const int pinPTT = A12;               // Manually go on air
   const int pinMaxOUT = A13;            // highest frequency
   const int pinPosSetZero = A14;        // Mobatools set zero
   const int pinManuCal = A15;           // Undefined jet
@@ -603,5 +603,8 @@ lcd.print("      ");
   lcd.setCursor(0,3);
   lcd.print("Position:");
   lcd.setCursor(10,3);
-  lcd.print(SfZe); 
+  lcd.print(SfZe);
+
+
+digitalWrite(enablePin, HIGH)   ;
 }
