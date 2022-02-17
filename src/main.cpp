@@ -95,8 +95,7 @@ void setup() {
         lcd.setCursor(10,3);
         lcd.print("    ");
 //Calibrate zero position
-
-   lcd.clear();
+lcd.clear();
   while (valEndSensor == 0){
         valEndSensor=digitalRead(pinEndSensor);
         digitalWrite(ms1, LOW);            
@@ -377,8 +376,7 @@ static void ManuCal()
           digitalWrite(enablePin, HIGH);
           break;
         }
-        
-  }     
+    }     
  }
 //############################# START Auto Tuning START ####################
 static void ATSTART()
