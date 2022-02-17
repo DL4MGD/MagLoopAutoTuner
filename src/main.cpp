@@ -1,5 +1,5 @@
 /*
-Version: 1.02
+Version: 1.03
 Magloop Automatic Controller-Firmware
 Arduino Mega 2560 and A4988 Stepper Driver
 Author: Michael Poschner (DL4MGD)
@@ -15,7 +15,6 @@ Loop-Parameters: Min. capacity = 9.568 MHz
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include <MobaTools.h>
-
   const int dirPin = 2;                 // Direction
   const int stepPin = 3;                // Step
   const int enablePin = 4;              // Chip enable/disable
@@ -37,10 +36,8 @@ Loop-Parameters: Min. capacity = 9.568 MHz
   const int pinEndSensor = A5;          // Zero detector
   const int pinRelais0 = A4;            // Reilais 0
   const int pinRelais1 = A3;            // Reilais 1
-
 MoToStepper myStepper ( 200, STEPDIR );
 LiquidCrystal_I2C lcd(0x27,20,4);
-
   int pinREFPO = A1;                    // Pin, to read reflected power
   int pinFWDPO = A0;                    // Pin, to read forward power 
   int val = 0;                          // Variable, to store analog value of A3
@@ -69,7 +66,6 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int SfZe = 0;                         // Steps away from Zero position
   int RampLen = 250;                    // Smoothing
   int valEndSensor = 0;                 // Calibrate zero position 
-
 void setup() {
   pinMode(stepPin, OUTPUT); 
   pinMode(dirPin, OUTPUT);
@@ -93,13 +89,11 @@ void setup() {
   digitalWrite(pinRelais0, LOW);
   pinMode(pinRelais1, INPUT_PULLUP);
   digitalWrite(pinRelais1, LOW);
-
   lcd.init();
   lcd.backlight();
   myStepper.attach( stepPin, dirPin );
         lcd.setCursor(10,3);
         lcd.print("    ");
-
 //Calibrate zero position
 
    lcd.clear();
@@ -131,9 +125,6 @@ void setup() {
   myStepper.setZero();
   digitalWrite(enablePin, HIGH);
 }
-
-    
-
 static void FFWD()
 {
 lcd.clear();
@@ -173,7 +164,6 @@ lcd.clear();
 lcd.clear();
 
 }
-
 static void FRWD()
 {
 lcd.clear();
@@ -212,7 +202,6 @@ lcd.clear();
        }
 lcd.clear();
 }       
-
 static void SFWD()
 {
 lcd.clear(); 
@@ -339,7 +328,6 @@ static void MaxOUT()
     }
   lcd.clear();
 }
-
 static void PosSetZero()
 {
   lcd.clear();
@@ -395,7 +383,6 @@ static void ManuCal()
 //############################# START Auto Tuning START ####################
 static void ATSTART()
 {
-
 lcd.clear();
 valREFPO=analogRead(pinREFPO);
 valFWDPO=analogRead(pinFWDPO);
@@ -442,7 +429,6 @@ break;
     myStepper.attachEnable( enablePin, 10, HIGH ); 
     myStepper.setSpeedSteps(SpeedStepsSlow);
     myStepper.doSteps(-10000);
-
     valVSWR = (valFWDPO/valREFPO);
     valFFWD = digitalRead(pinFFWD);
     valFRWD = digitalRead(pinFRWD);
@@ -465,7 +451,6 @@ break;
     lcd.print("Position:");
     lcd.setCursor(10,3);
     lcd.print(SfZe); 
-   
     valREFPOaft=analogRead(pinREFPO);
   if (valREFPOaft < 15){
     myStepper.stop();
@@ -485,7 +470,6 @@ valREFPO=analogRead(pinREFPO);
     digitalWrite(enablePin, HIGH);
     break;
   }
-  
 valREFPO = analogRead(pinREFPO);
 valFWDPO = analogRead(pinFWDPO);
 valVSWR = (valFWDPO/valREFPO);
@@ -518,9 +502,6 @@ lcd.clear();
 static void ATSTOP()
 {
 }
-
-
-
 void loop()
 {
       valFFWD = digitalRead(pinFFWD);
@@ -577,8 +558,6 @@ void loop()
         delay(15);        
         ManuCal();
       }
-
-
 lcd.setCursor(0,0);
 valREFPO = analogRead(pinREFPO);
 valFWDPO = analogRead(pinFWDPO);
@@ -600,11 +579,9 @@ lcd.setCursor(0,2);
 lcd.print("VSWR=");
 lcd.print(valVSWR+1);
 lcd.print("      "); 
-  lcd.setCursor(0,3);
-  lcd.print("Position:");
-  lcd.setCursor(10,3);
-  lcd.print(SfZe);
-
-
+lcd.setCursor(0,3);
+lcd.print("Position:");
+lcd.setCursor(10,3);
+lcd.print(SfZe);
 digitalWrite(enablePin, HIGH)   ;
 }
