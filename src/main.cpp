@@ -1,5 +1,5 @@
 /*
-Version: 0.80
+Version: 1.01
 Magloop Automatic Controller-Firmware
 Arduino Mega 2560 and A4988 Stepper Driver
 Author: Michael Poschner (DL4MGD)
@@ -403,7 +403,6 @@ digitalWrite(pinRelais0, HIGH);
 delay(100);
 digitalWrite(pinRelais1, HIGH);
 CompFwRw=analogRead(pinREFPO);
-
 while (valREFPO > 1){
     digitalWrite(ms1, LOW);
     digitalWrite(ms2, HIGH);
@@ -462,8 +461,7 @@ valREFPO=analogRead(pinREFPO);
     lcd.print("Tuned");
     break;
     delay(2000);
-  }
-  
+    }
   }
 valREFPO=analogRead(pinREFPO);
   if (valREFPO < 80){
