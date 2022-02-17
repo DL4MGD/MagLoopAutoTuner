@@ -1,5 +1,5 @@
 /*
-Version: 1.04
+Version: 1.05
 Magloop Automatic Controller-Firmware
 Arduino Mega 2560 and A4988 Stepper Driver
 Author: Michael Poschner (DL4MGD)
@@ -47,10 +47,10 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valSRWD = 0;                      // Manual slow reward
   int valATSTART = 0;                   // Manual start autotune
   int valATSTOP = 0;                    // Manual stop autotune
-  int valPTT = 0;                       // Maximal Capacity 
+  int valPTT = 0;                     // Maximal Capacity 
   int valMaxOUT = 0;                    // Minimal Capacity
   int valPosSetZero = 0;                // Mobatools set zero
-  int valManuCal = 0;                   // Manual calibration
+  int valManuCal = 0;                     // Undefined jet
   int valREFPO = 0;                     // Initialize reflected power
   int valFWDPO = 0;                     // Initialize forward power
   int valVSWR = 0;                      // VSWR
@@ -60,9 +60,9 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valSpeedSteps = 0;                //
   int valCurrentSpeed = 0;              // Save current speed setting
   int SpeedStepsFast = 5000;            // Fast stepper turning
-  int SpeedStepsSlow = 80;              // Slow stepper turning
+  int SpeedStepsSlow = 80;             // Slow stepper turning
   int SpeedStepsTuneFast = 3000;        // Beginn tuning with this speed
-  int SpeedStepsTuneSlow = 70;          // Finetuning
+  int SpeedStepsTuneSlow = 100;         // Finetuning
   int SfZe = 0;                         // Steps away from Zero position
   int RampLen = 250;                    // Smoothing
   int valEndSensor = 0;                 // Calibrate zero position 
@@ -458,7 +458,7 @@ break;
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("Tuned");
-    delay(2000);    
+    delay(2000);
     break;
 
     }
