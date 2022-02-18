@@ -11,7 +11,7 @@ Using Subroutining
           *  Hardwareprogramming is ALWAYS a risky business. Code errors    *
           *  may cause direct hardware DAMAGE. Especially with moving parts *
           *  like stepper motors and switches etc. So check your pinning    *
-          *  and your wirering carefully before useing this code out of the *
+          *  and your wirering carefully before using this code out of the  *
           *  box.       SO USE THIS FREE CODE FULLY AT YOUR OWN RISK!       *
           *******************************************************************
 
