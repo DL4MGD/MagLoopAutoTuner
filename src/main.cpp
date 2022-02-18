@@ -47,10 +47,10 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valSRWD = 0;                      // Manual slow reward
   int valATSTART = 0;                   // Manual start autotune
   int valATSTOP = 0;                    // Manual stop autotune
-  int valPTT = 0;                     // Maximal Capacity 
+  int valPTT = 0;                       // Maximal Capacity 
   int valMaxOUT = 0;                    // Minimal Capacity
   int valPosSetZero = 0;                // Mobatools set zero
-  int valManuCal = 0;                     // Undefined jet
+  int valManuCal = 0;                   // Manual recalibrate
   int valREFPO = 0;                     // Initialize reflected power
   int valFWDPO = 0;                     // Initialize forward power
   int valVSWR = 0;                      // VSWR
@@ -60,9 +60,9 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valSpeedSteps = 0;                //
   int valCurrentSpeed = 0;              // Save current speed setting
   int SpeedStepsFast = 5000;            // Fast stepper turning
-  int SpeedStepsSlow = 80;             // Slow stepper turning
-  int SpeedStepsTuneFast = 3000;        // Beginn tuning with this speed
-  int SpeedStepsTuneSlow = 100;         // Finetuning
+  int SpeedStepsSlow = 80;              // Slow stepper turning
+  int SpeedStepsTuneFast = 4000;        // Beginn tuning with this speed
+  int SpeedStepsTuneSlow = 50;          // Finetuning
   int SfZe = 0;                         // Steps away from Zero position
   int RampLen = 250;                    // Smoothing
   int valEndSensor = 0;                 // Calibrate zero position 
@@ -299,8 +299,8 @@ static void PTT()
           lcd.print("VSWR=");
           lcd.print(valVSWR+1);
           lcd.print("      ");
-          lcd.setCursor(12,3);
-          lcd.print("On AIR !");
+          lcd.setCursor(13,3);
+          lcd.print("On AIR!");
     }
   digitalWrite(pinRelais0, LOW);
   digitalWrite(pinRelais1, LOW);    
@@ -389,9 +389,9 @@ delay(100);
 digitalWrite(pinRelais1, HIGH);
 CompFwRw=analogRead(pinREFPO);
 while (valREFPO > 1){
-    digitalWrite(ms1, LOW);
-    digitalWrite(ms2, HIGH);
-    digitalWrite(ms3, LOW);
+    digitalWrite(ms1, LOW); 
+    digitalWrite(ms2, HIGH); 
+    digitalWrite(ms3, LOW); 
   if (valATSTOP == 0){
     myStepper.stop();
     digitalWrite(enablePin, HIGH); 

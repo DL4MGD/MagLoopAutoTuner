@@ -1,5 +1,5 @@
 /*
-Version: 1.04
+Version: 1.05
 Magloop Automatic Controller-Firmware
 Arduino Mega 2560 and A4988 Stepper Driver
 Author: Michael Poschner (DL4MGD)
@@ -50,7 +50,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valPTT = 0;                       // Maximal Capacity 
   int valMaxOUT = 0;                    // Minimal Capacity
   int valPosSetZero = 0;                // Mobatools set zero
-  int valManuCal = 0;                   // Manual calibration
+  int valManuCal = 0;                   // Manual recalibrate
   int valREFPO = 0;                     // Initialize reflected power
   int valFWDPO = 0;                     // Initialize forward power
   int valVSWR = 0;                      // VSWR
@@ -61,8 +61,8 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valCurrentSpeed = 0;              // Save current speed setting
   int SpeedStepsFast = 5000;            // Fast stepper turning
   int SpeedStepsSlow = 80;              // Slow stepper turning
-  int SpeedStepsTuneFast = 3000;        // Beginn tuning with this speed
-  int SpeedStepsTuneSlow = 70;          // Finetuning
+  int SpeedStepsTuneFast = 2500;        // Beginn tuning with this speed
+  int SpeedStepsTuneSlow = 50;          // Finetuning
   int SfZe = 0;                         // Steps away from Zero position
   int RampLen = 250;                    // Smoothing
   int valEndSensor = 0;                 // Calibrate zero position 
@@ -299,8 +299,8 @@ static void PTT()
           lcd.print("VSWR=");
           lcd.print(valVSWR+1);
           lcd.print("      ");
-          lcd.setCursor(12,3);
-          lcd.print("On AIR !");
+          lcd.setCursor(13,3);
+          lcd.print("On AIR!");
     }
   digitalWrite(pinRelais0, LOW);
   digitalWrite(pinRelais1, LOW);    
@@ -455,35 +455,10 @@ break;
     digitalWrite(enablePin, HIGH);
     digitalWrite(pinRelais0, LOW);
     digitalWrite(pinRelais1, LOW);
-    valREFPO = analogRead(pinREFPO);
-    valFWDPO = analogRead(pinFWDPO);
-    valVSWR = (valFWDPO/valREFPO);
-    valFFWD = digitalRead(pinFFWD);
-    valFRWD = digitalRead(pinFRWD);
-    valSFWD = digitalRead(pinSFWD);
-    valSRWD = digitalRead(pinSRWD);
-    lcd.setCursor(0,0);
-    lcd.print("Vref=");
-    lcd.print(valREFPO);
-    lcd.print("      ");
-    lcd.setCursor(0,1);
-    lcd.print("Vfwd=");
-    lcd.print(valFWDPO);
-    lcd.print("      ");
-    lcd.setCursor(0,2);
-    lcd.print("VSWR=");
-    lcd.print(valVSWR+1);
-    lcd.print("      ");
-    SfZe=myStepper.readSteps();
-    lcd.setCursor(0,3);
-    lcd.print("Pos. is:");
-    lcd.setCursor(10,3);
-    lcd.print(SfZe); 
-delay(1000);
     lcd.clear();
-    lcd.setCursor(0,0);    
+    lcd.setCursor(0,0);
     lcd.print("Tuned");
-    delay(2000);    
+    delay(2000);
     break;
 
     }
