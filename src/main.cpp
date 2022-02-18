@@ -8,13 +8,13 @@ Using MobaTools for steppercontrol
 Using Subroutining
 
           *******************************************************************
-          *  Hardwareürogramming is ALWAYS a riskx business. Code errors    *
-          *  may cause direct hardware DAMAGE, especialy with moving parts  *
-          *  like stepper motors an switches etc., so check your pinning    *
+          *  Hardwareprogramming is ALWAYS a risky business. Code errors    *
+          *  may cause direct hardware DAMAGE. Especially with moving parts *
+          *  like stepper motors and switches etc. So check your pinning    *
           *  and your wirering carefully before useing this code out of the *
           *  box.       SO USE THIS FREE CODE FULLY AT YOUR OWN RISK!       *
           *******************************************************************
-          
+
 Loop-Parameters: Min. capacity = 9.568 MHz
                  Max. capacity = 29,900 MHz
 
