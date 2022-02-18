@@ -60,7 +60,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valSpeedSteps = 0;                //
   int valCurrentSpeed = 0;              // Save current speed setting
   int SpeedStepsFast = 5000;            // Fast stepper turning
-  int SpeedStepsSlow = 80;              // Slow stepper turning
+  int SpeedStepsSlow = 100;             // Slow stepper turning
   int SpeedStepsTuneFast = 4000;        // Beginn tuning with this speed
   int SpeedStepsTuneSlow = 50;          // Finetuning
   int SfZe = 0;                         // Steps away from Zero position
@@ -115,7 +115,9 @@ lcd.clear();
           else if (valEndSensor != 0){
           myStepper.stop();
           lcd.clear();
-          lcd.print("Found: Calibrated!");
+          lcd.print("Found zero!");
+          lcd.setCursor(0,2);
+          lcd.print("Calibrated :-)");
           delay(1000);
          }
         lcd.setCursor(0,3);
