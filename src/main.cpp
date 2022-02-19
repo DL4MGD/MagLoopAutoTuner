@@ -1,5 +1,5 @@
 /*
-Version: 1.06
+Version: 1.10
 Magloop Automatic Controller-Firmware
 Arduino Mega 2560 and A4988 Stepper Driver
 Author: Michael Poschner (DL4MGD)
@@ -68,7 +68,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valSpeedSteps = 0;                //
   int valCurrentSpeed = 0;              // Save current speed setting
   int SpeedStepsFast = 5000;            // Fast stepper turning
-  int SpeedStepsSlow = 100;             // Slow stepper turning
+  int SpeedStepsSlow = 200;             // Slow stepper turning
   int SpeedStepsTuneFast = 6000;        // Beginn tuning with this speed
   int SpeedStepsTuneSlow = 150;         // Finetuning
   int SfZe = 0;                         // Steps away from Zero position
@@ -253,9 +253,9 @@ static void SRWD()
 {
 lcd.clear(); 
       while (valSRWD == 0){
-  digitalWrite(ms1, LOW);
+  digitalWrite(ms1, HIGH);
   digitalWrite(ms2, HIGH);
-  digitalWrite(ms3, LOW);
+  digitalWrite(ms3, HIGH);
         valSRWD = digitalRead(pinSRWD);
         myStepper.attachEnable( enablePin, 10, HIGH ); 
         myStepper.setSpeedSteps(SpeedStepsSlow);
