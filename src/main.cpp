@@ -67,9 +67,9 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int CompFwRw = 0;                     // Compare save value once
   int valSpeedSteps = 0;                //
   int valCurrentSpeed = 0;              // Save current speed setting
-  int SpeedStepsFast = 5000;            // Fast stepper turning
+  int SpeedStepsFast = 25000;           // Fast stepper turning
   int SpeedStepsSlow = 200;             // Slow stepper turning
-  int SpeedStepsTuneFast = 6000;        // Beginn tuning with this speed
+  int SpeedStepsTuneFast = 7000;        // Beginn tuning with this speed
   int SpeedStepsTuneSlow = 150;         // Finetuning
   int SfZe = 0;                         // Steps away from Zero position
   int RampLen = 250;                    // Smoothing
@@ -138,9 +138,9 @@ static void FFWD()
 {
 lcd.clear();
       while (valFFWD == 0){
-  digitalWrite(ms1, LOW);
+  digitalWrite(ms1, HIGH);
   digitalWrite(ms2, HIGH);
-  digitalWrite(ms3, LOW);
+  digitalWrite(ms3, HIGH);
         valFFWD = digitalRead(pinFFWD);
         myStepper.attachEnable( enablePin, 10, HIGH );
         myStepper.setSpeedSteps(SpeedStepsFast);
@@ -177,9 +177,9 @@ static void FRWD()
 {
 lcd.clear();
       while (valFRWD == 0){
-  digitalWrite(ms1, LOW);
+  digitalWrite(ms1, HIGH);
   digitalWrite(ms2, HIGH);
-  digitalWrite(ms3, LOW);
+  digitalWrite(ms3, HIGH);
         valFRWD = digitalRead(pinFRWD);
         myStepper.attachEnable( enablePin, 10, HIGH );
         myStepper.setSpeedSteps(SpeedStepsFast);
