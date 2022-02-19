@@ -70,10 +70,16 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int SpeedStepsFast = 5000;            // Fast stepper turning
   int SpeedStepsSlow = 100;             // Slow stepper turning
   int SpeedStepsTuneFast = 4000;        // Beginn tuning with this speed
-  int SpeedStepsTuneSlow = 50;          // Finetuning
+  int SpeedStepsTuneSlow = 60;          // Finetuning
   int SfZe = 0;                         // Steps away from Zero position
   int RampLen = 250;                    // Smoothing
-  int valEndSensor = 0;                 // Calibrate zero position 
+  int valEndSensor = 0;                 // Calibrate zero position
+  int storeValREFPO = 0;                // Safe value
+  int storeValFWDPO = 0;                // Save value 
+  int TuneTriggerHIGH = 0;              // Tunetrigger high
+  int TuneTriggerMID = 0;               // Tunetrigger middle
+  int TuneTriggerLOW = 0;               // TuneTrigger low
+
 void setup() {
   pinMode(stepPin, OUTPUT); 
   pinMode(dirPin, OUTPUT);
@@ -391,122 +397,111 @@ static void ManuCal()
 //############################# START Auto Tuning START ####################
 static void ATSTART()
 {
-lcd.clear();
-valREFPO=analogRead(pinREFPO);
-valFWDPO=analogRead(pinFWDPO);
+lcd.clear();  
+myStepper.setZero();
 digitalWrite(pinRelais0, HIGH);
-delay(100);
+delay(20);
 digitalWrite(pinRelais1, HIGH);
-CompFwRw=analogRead(pinREFPO);
-while (valREFPO > 1){
-    digitalWrite(ms1, LOW); 
-    digitalWrite(ms2, HIGH); 
-    digitalWrite(ms3, LOW); 
-  if (valATSTOP == 0){
+digitalWrite(enablePin, LOW);
+
+valREFPObef=analogRead(pinREFPO);
+storeValFWDPO=valREFPO;
+
+TuneTriggerHIGH=storeValFWDPO-storeValREFPO+500;     //Building trigger HIGH
+TuneTriggerMID=storeValREFPO-storeValREFPO+100;      //Building trigger MID
+TuneTriggerLOW=storeValREFPO-storeValREFPO+15;       //Building trigger LOW
+
+  digitalWrite(ms1, HIGH);
+  digitalWrite(ms2, HIGH);
+  digitalWrite(ms3, HIGH);
+  myStepper.attachEnable( enablePin, 10, HIGH ); 
+while (valREFPO > 1 ){
+    if (valATSTOP == 0){
     myStepper.stop();
     digitalWrite(enablePin, HIGH); 
     digitalWrite(pinRelais0, LOW) ;
     digitalWrite(pinRelais1, LOW);
 break;
   }
-    valREFPO=analogRead(pinREFPO);
-    valFWDPO=analogRead(pinFWDPO);
-    valATSTOP=digitalRead(pinATSTOP);
-    myStepper.attachEnable( enablePin, 10, HIGH ); 
-    myStepper.setSpeedSteps(SpeedStepsTuneFast);
-    myStepper.doSteps(3000);
-    valREFPO=analogRead(pinREFPO);
-  while (valREFPO < 100){
-  if (valATSTOP == 0){
-    myStepper.stop();
-    digitalWrite(enablePin, HIGH); 
-    digitalWrite(pinRelais0, LOW) ;
-    digitalWrite(pinRelais1, LOW);
-  break;
-  }
-  if (valATSTOP == 0){
-    myStepper.stop();
-    digitalWrite(enablePin, HIGH); 
-    digitalWrite(pinRelais0, LOW) ;
-    digitalWrite(pinRelais1, LOW);
-  break;
-  }
-    digitalWrite(ms1, HIGH);
-    digitalWrite(ms2, HIGH);
-    digitalWrite(ms3, HIGH);
-    myStepper.attachEnable( enablePin, 10, HIGH ); 
-    myStepper.setSpeedSteps(SpeedStepsSlow);
-    myStepper.doSteps(-10000);
-    valVSWR = (valFWDPO/valREFPO);
-    valFFWD = digitalRead(pinFFWD);
-    valFRWD = digitalRead(pinFRWD);
-    valSFWD = digitalRead(pinSFWD);
-    valSRWD = digitalRead(pinSRWD);
+//------------- DISPLAY----------------
     lcd.setCursor(0,0);
+    valREFPO=analogRead(pinREFPO);
     lcd.print("Vref=");
     lcd.print(valREFPO);
-    lcd.print("      ");
-    lcd.setCursor(0,1);
-    lcd.print("Vfwd=");
-    lcd.print(valFWDPO);
-    lcd.print("      ");
-    lcd.setCursor(0,2);
-    lcd.print("VSWR=");
-    lcd.print(valVSWR+1);
     lcd.print("      ");
     SfZe=myStepper.readSteps();
     lcd.setCursor(0,3);
     lcd.print("Position:");
     lcd.setCursor(10,3);
     lcd.print(SfZe); 
-    valREFPOaft=analogRead(pinREFPO);
-  if (valREFPOaft < 15){
+//------------- DISPLAY----------------
+  valREFPO=analogRead(pinREFPO);
+  myStepper.attachEnable( enablePin, 10, HIGH );   
+  myStepper.setSpeedSteps(SpeedStepsTuneFast);
+  myStepper.rotate(1);
+if (valREFPO < TuneTriggerMID){
+  if (valATSTOP == 0){
     myStepper.stop();
-    digitalWrite(enablePin, HIGH);
-    digitalWrite(pinRelais0, LOW);
+    digitalWrite(enablePin, HIGH); 
+    digitalWrite(pinRelais0, LOW) ;
     digitalWrite(pinRelais1, LOW);
-    lcd.clear();
+  break;
+  } 
+//------------- DISPLAY----------------
     lcd.setCursor(0,0);
-    lcd.print("Tuned");
-    delay(2000);
-    break;
+    valREFPO=analogRead(pinREFPO);
+    lcd.print("Vref=");
+    lcd.print(valREFPO);
+    lcd.print("      ");
+    SfZe=myStepper.readSteps();
+    lcd.setCursor(0,3);
+    lcd.print("Position:");
+    lcd.setCursor(10,3);
+    lcd.print(SfZe); 
+//------------- DISPLAY----------------
 
-    }
-  }
-valREFPO=analogRead(pinREFPO);
-  if (valREFPO < 80){
+  valREFPO=analogRead(pinREFPO);
+  digitalWrite(ms1, LOW);
+  digitalWrite(ms2, HIGH);
+  digitalWrite(ms3, LOW);
+  myStepper.setSpeed(SpeedStepsTuneSlow);
+  myStepper.attachEnable( enablePin, 10, HIGH );   
+  myStepper.rotate(-1);
+  valREFPO=analogRead(pinREFPO);
+}
+else if (valREFPO < TuneTriggerLOW){
+  if (valATSTOP == 0){
     myStepper.stop();
-    digitalWrite(enablePin, HIGH);
-    break;
+    digitalWrite(enablePin, HIGH); 
+    digitalWrite(pinRelais0, LOW) ;
+    digitalWrite(pinRelais1, LOW);
+  break;
+  }  
+//------------- DISPLAY----------------
+    lcd.setCursor(0,0);
+    valREFPO=analogRead(pinREFPO);
+    lcd.print("Vref=");
+    lcd.print(valREFPO);
+    lcd.print("      ");
+    SfZe=myStepper.readSteps();
+    lcd.setCursor(0,3);
+    lcd.print("Position:");
+    lcd.setCursor(10,3);
+    lcd.print(SfZe); 
+//------------- DISPLAY----------------
+  valREFPO=analogRead(pinREFPO);
+  myStepper.stop();
+  digitalWrite(pinRelais0, LOW);
+  digitalWrite(pinRelais1, LOW);
+  digitalWrite(enablePin,  HIGH);
+  myStepper.attachEnable( enablePin, 10, LOW);  
+  break;
   }
-valREFPO = analogRead(pinREFPO);
-valFWDPO = analogRead(pinFWDPO);
-valVSWR = (valFWDPO/valREFPO);
-valFFWD = digitalRead(pinFFWD);
-valFRWD = digitalRead(pinFRWD);
-valSFWD = digitalRead(pinSFWD);
-valSRWD = digitalRead(pinSRWD);
-lcd.setCursor(0,0);
-lcd.print("Vref=");
-lcd.print(valREFPO);
-lcd.print("      ");
-lcd.setCursor(0,1);
-lcd.print("Vfwd=");
-lcd.print(valFWDPO);
-lcd.print("      ");
-lcd.setCursor(0,2);
-lcd.print("VSWR=");
-lcd.print(valVSWR+1);
-lcd.print("      ");
-SfZe=myStepper.readSteps();
-lcd.setCursor(0,3);
-lcd.print("Tuning:");
-lcd.setCursor(10,3);
-lcd.print(SfZe); 
-  }
-lcd.clear();
+ }
 }
 //############################# STOP Auto Tuning STOP  ####################
+
+
 
 static void ATSTOP()
 {

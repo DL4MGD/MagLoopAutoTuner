@@ -1,11 +1,19 @@
 /*
-Version: 1.05
+Version: 1.06
 Magloop Automatic Controller-Firmware
 Arduino Mega 2560 and A4988 Stepper Driver
 Author: Michael Poschner (DL4MGD)
 Licence: Ablolutely Free
 Using MobaTools for steppercontrol
 Using Subroutining
+
+          *******************************************************************
+          *  Hardwareprogramming is ALWAYS a risky business. Code errors    *
+          *  may cause direct hardware DAMAGE. Especially with moving parts *
+          *  like stepper motors and switches etc. So check your pinning    *
+          *  and your wirering carefully before using this code out of the  *
+          *  box.       SO USE THIS FREE CODE FULLY AT YOUR OWN RISK!       *
+          *******************************************************************
 
 Loop-Parameters: Min. capacity = 9.568 MHz
                  Max. capacity = 29,900 MHz
@@ -60,8 +68,8 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valSpeedSteps = 0;                //
   int valCurrentSpeed = 0;              // Save current speed setting
   int SpeedStepsFast = 5000;            // Fast stepper turning
-  int SpeedStepsSlow = 80;              // Slow stepper turning
-  int SpeedStepsTuneFast = 2500;        // Beginn tuning with this speed
+  int SpeedStepsSlow = 100;             // Slow stepper turning
+  int SpeedStepsTuneFast = 4000;        // Beginn tuning with this speed
   int SpeedStepsTuneSlow = 50;          // Finetuning
   int SfZe = 0;                         // Steps away from Zero position
   int RampLen = 250;                    // Smoothing
@@ -115,7 +123,9 @@ lcd.clear();
           else if (valEndSensor != 0){
           myStepper.stop();
           lcd.clear();
-          lcd.print("Found: Calibrated!");
+          lcd.print("Found zero!");
+          lcd.setCursor(0,2);
+          lcd.print("Calibrated :-)");
           delay(1000);
          }
         lcd.setCursor(0,3);
@@ -389,9 +399,9 @@ delay(100);
 digitalWrite(pinRelais1, HIGH);
 CompFwRw=analogRead(pinREFPO);
 while (valREFPO > 1){
-    digitalWrite(ms1, LOW);
-    digitalWrite(ms2, HIGH);
-    digitalWrite(ms3, LOW);
+    digitalWrite(ms1, LOW); 
+    digitalWrite(ms2, HIGH); 
+    digitalWrite(ms3, LOW); 
   if (valATSTOP == 0){
     myStepper.stop();
     digitalWrite(enablePin, HIGH); 
