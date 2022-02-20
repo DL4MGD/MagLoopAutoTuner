@@ -103,7 +103,7 @@ void setup() {
         lcd.setCursor(10,3);
         lcd.print("    ");
 //Calibrate zero position
-lcd.clear();
+/*lcd.clear();
   while (valEndSensor == 0){
         valEndSensor=digitalRead(pinEndSensor);
         digitalWrite(ms1, LOW);            
@@ -129,7 +129,7 @@ lcd.clear();
           delay(1000);
          }
         lcd.setCursor(0,3);
-  }
+  }*/
   lcd.clear();
   myStepper.setZero();
   digitalWrite(enablePin, HIGH);
