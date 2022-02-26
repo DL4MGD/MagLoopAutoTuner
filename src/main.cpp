@@ -59,11 +59,11 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valMaxOUT = 0;                    // Minimal Capacity
   int valPosSetZero = 0;                // Mobatools set zero
   int valManuCal = 0;                   // Manual recalibrate
-  int valREFPO = 0;                     // Initialize reflected power
-  int valFWDPO = 0;                     // Initialize forward power
-  int valVSWR = 0;                      // VSWR
-  int valREFPObef = 0;                  // Reflected power value before a tuning step
-  int valREFPOaft = 0;                  // Refrectec power value after a tuning step
+  float valREFPO = 0;                     // Initialize reflected power
+  float valFWDPO = 0;                     // Initialize forward power
+  float valVSWR = 0;                      // VSWR
+  float valREFPObef = 0;                  // Reflected power value before a tuning step
+  float valREFPOaft = 0;                  // Refrectec power value after a tuning step
   int CompFwRw = 0;                     // Compare save value once
   int valSpeedSteps = 0;                //
   int valCurrentSpeed = 0;              // Save current speed setting
@@ -355,7 +355,7 @@ static void ManuCal()
   digitalWrite(ms1, LOW);            
   digitalWrite(ms2, HIGH);            
   digitalWrite(ms3, LOW);
-  myStepper.setZero();
+//  myStepper.setZero();
   for (int i; i < 4000; i--){
         while (valManuCal == 0){
         valManuCal=digitalRead(pinManuCal);
@@ -381,7 +381,7 @@ static void ManuCal()
           lcd.clear();
           lcd.print("Found: Calibrated!");
           delay(1000);
-          myStepper.setZero();
+//          myStepper.setZero();
           lcd.clear();
           digitalWrite(enablePin, HIGH);
           break;
