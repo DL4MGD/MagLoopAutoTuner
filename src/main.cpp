@@ -1,5 +1,5 @@
 /*
-Version: 1.10
+Version: 1.15
 Magloop Automatic Controller-Firmware
 Arduino Mega 2560 and A4988 Stepper Driver
 Author: Michael Poschner (DL4MGD)
