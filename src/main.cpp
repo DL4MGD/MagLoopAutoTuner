@@ -356,7 +356,7 @@ static void ManuCal()
   digitalWrite(ms2, HIGH);            
   digitalWrite(ms3, LOW);
 //  myStepper.setZero();
-  for (int i; i < 4000; i--){
+  for (int i; i < 8000; i--){
         while (valManuCal == 0){
         valManuCal=digitalRead(pinManuCal);
         }
@@ -375,13 +375,16 @@ static void ManuCal()
   if (SfZe >= 3900){
           lcd.setCursor(0,3);
           lcd.print("ERROR: No CalSig!");
+          delay(2000);
+          lcd.clear();
+          break;
         }
   else if (valEndSensor != 0){
           myStepper.stop();
           lcd.clear();
           lcd.print("Found: Calibrated!");
           delay(1000);
-//          myStepper.setZero();
+          myStepper.setZero();
           lcd.clear();
           digitalWrite(enablePin, HIGH);
           break;
