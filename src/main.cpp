@@ -1,5 +1,5 @@
 /*
-Version: 1.15
+Version: 1.50
 Magloop Automatic Controller-Firmware
 Arduino Mega 2560 and A4988 Stepper Driver
 Author: Michael Poschner (DL4MGD)
@@ -401,125 +401,52 @@ digitalWrite(pinRelais0, HIGH);
 delay(100);
 digitalWrite(pinRelais1, HIGH);
 CompFwRw=analogRead(pinREFPO);
-while (valREFPO > 1){
+// #### Coarse Tuning-Cycle start 
+valREFPO=analogRead(pinREFPO);
+while ( valREFPO > 0 ){
+  lcd.setCursor(0,0);
+  lcd.print("Vref=");
+  valREFPO=analogRead(pinREFPO);
+  lcd.print(valREFPO);
+
+
+// Move Stepper start
     digitalWrite(ms1, HIGH); 
     digitalWrite(ms2, HIGH); 
-    digitalWrite(ms3, HIGH); 
-  if (valATSTOP == 0){
-    myStepper.stop();
-    digitalWrite(enablePin, HIGH); 
-    digitalWrite(pinRelais0, LOW) ;
-    digitalWrite(pinRelais1, LOW);
-break;
-  }
-    valREFPO=analogRead(pinREFPO);
-    valFWDPO=analogRead(pinFWDPO);
-    valATSTOP=digitalRead(pinATSTOP);
+    digitalWrite(ms3, HIGH);   
     myStepper.attachEnable( enablePin, 10, HIGH ); 
     myStepper.setSpeedSteps(SpeedStepsTuneFast);
     myStepper.doSteps(3000);
-    valREFPO=analogRead(pinREFPO);
-  while (valREFPO < 100){
-  if (valATSTOP == 0){
-    myStepper.stop();
-    digitalWrite(enablePin, HIGH); 
-    digitalWrite(pinRelais0, LOW) ;
-    digitalWrite(pinRelais1, LOW);
-  break;
-  }
-  if (valATSTOP == 0){
-    myStepper.stop();
-    digitalWrite(enablePin, HIGH); 
-    digitalWrite(pinRelais0, LOW) ;
-    digitalWrite(pinRelais1, LOW);
-  break;
-  }
+// Move Stepper end
+
+// #### Coarse Tuning-Cycle stop 
+// #### FINE TUNING START
+  valREFPO=analogRead(pinREFPO);
+  if (valREFPO <= 50){
     digitalWrite(ms1, HIGH);
     digitalWrite(ms2, HIGH);
     digitalWrite(ms3, HIGH);
     myStepper.attachEnable( enablePin, 10, HIGH ); 
     myStepper.setSpeedSteps(SpeedStepsSlow);
     myStepper.doSteps(-10000);
-
-  if (valATSTOP == 0){
-    myStepper.stop();
-    digitalWrite(enablePin, HIGH); 
-    digitalWrite(pinRelais0, LOW) ;
-    digitalWrite(pinRelais1, LOW);
-  break;
-  }
-
-    valVSWR = (valFWDPO/valREFPO);
-    valFFWD = digitalRead(pinFFWD);
-    valFRWD = digitalRead(pinFRWD);
-    valSFWD = digitalRead(pinSFWD);
-    valSRWD = digitalRead(pinSRWD);
-    lcd.setCursor(0,0);
-    lcd.print("Vref=");
-    lcd.print(valREFPO);
-    lcd.print("      ");
-    lcd.setCursor(0,1);
-    lcd.print("Vfwd=");
-    lcd.print(valFWDPO);
-    lcd.print("      ");
-    lcd.setCursor(0,2);
-    lcd.print("VSWR=");
-    lcd.print(valVSWR+1);
-    lcd.print("      ");
-    SfZe=myStepper.readSteps();
-    lcd.setCursor(0,3);
-    lcd.print("Position:");
-    lcd.setCursor(10,3);
-    lcd.print(SfZe); 
-    valREFPOaft=analogRead(pinREFPO);
-  if (valREFPOaft < 15){
-    myStepper.stop();
-    digitalWrite(enablePin, HIGH);
-    digitalWrite(pinRelais0, LOW);
-    digitalWrite(pinRelais1, LOW);
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("Tuned");
-    delay(2000);
-    break;
-
+      if (valREFPO < 10){
+        myStepper.stop();
+        digitalWrite(enablePin, HIGH);
+        digitalWrite(pinRelais0, LOW);
+        digitalWrite(pinRelais1, LOW);
+        lcd.clear();
+        lcd.setCursor(1,0);
+        lcd.print("COARSE Tuned !");
+        lcd.setCursor(3,0);
+        lcd.print("CHECK SWR!");
+        delay(2000);
+        break;
+// ### FINE TUNING END        
     }
   }
-valREFPO=analogRead(pinREFPO);
-  if (valREFPO < 60){
-    myStepper.stop();
-    digitalWrite(enablePin, HIGH);
-    break;
-  }
-valREFPO = analogRead(pinREFPO);
-valFWDPO = analogRead(pinFWDPO);
-valVSWR = (valFWDPO/valREFPO);
-valFFWD = digitalRead(pinFFWD);
-valFRWD = digitalRead(pinFRWD);
-valSFWD = digitalRead(pinSFWD);
-valSRWD = digitalRead(pinSRWD);
-lcd.setCursor(0,0);
-lcd.print("Vref=");
-lcd.print(valREFPO);
-lcd.print("      ");
-lcd.setCursor(0,1);
-lcd.print("Vfwd=");
-lcd.print(valFWDPO);
-lcd.print("      ");
-lcd.setCursor(0,2);
-lcd.print("VSWR=");
-lcd.print(valVSWR+1);
-lcd.print("      ");
-SfZe=myStepper.readSteps();
-lcd.setCursor(0,3);
-lcd.print("Tuning:");
-lcd.setCursor(10,3);
-lcd.print(SfZe); 
-  }
-lcd.clear();
 }
-//############################# STOP Auto Tuning STOP  ####################
-
+//############################ STOP Auto Tuning STOP  ###################################
+}
 static void ATSTOP()
 {
 }
