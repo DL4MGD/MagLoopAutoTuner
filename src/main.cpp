@@ -59,11 +59,11 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valMaxOUT = 0;                    // Minimal Capacity
   int valPosSetZero = 0;                // Mobatools set zero
   int valManuCal = 0;                   // Manual recalibrate
-  float valREFPO = 0;                     // Initialize reflected power
-  float valFWDPO = 0;                     // Initialize forward power
-  float valVSWR = 0;                      // VSWR
-  float valREFPObef = 0;                  // Reflected power value before a tuning step
-  float valREFPOaft = 0;                  // Refrectec power value after a tuning step
+  float valREFPO = 0;                   // Initialize reflected power
+  float valFWDPO = 0;                   // Initialize forward power
+  float valVSWR = 0;                    // VSWR
+  float valREFPObef = 0;                // Reflected power value before a tuning step
+  float valREFPOaft = 0;                // Refrectec power value after a tuning step
   int CompFwRw = 0;                     // Compare save value once
   int valSpeedSteps = 0;                //
   int valCurrentSpeed = 0;              // Save current speed setting
