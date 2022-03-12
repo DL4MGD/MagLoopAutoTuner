@@ -401,13 +401,11 @@ digitalWrite(pinRelais0, HIGH);
 delay(100);
 digitalWrite(pinRelais1, HIGH);
 CompFwRw=analogRead(pinREFPO);
-// #### Coarse Tuning-Cycle start 
 valREFPO=analogRead(pinREFPO);
+lcd.setCursor(0,0);
+lcd.print("Tuning now...");
+// #### Coarse Tuning-Cycle start 
 while ( valREFPO > 0 ){
-  lcd.setCursor(0,0);
-  lcd.print("Vref=");
-  valREFPO=analogRead(pinREFPO);
-  lcd.print(valREFPO);
 
 
 // Move Stepper start
@@ -422,6 +420,7 @@ while ( valREFPO > 0 ){
 // #### Coarse Tuning-Cycle stop 
 // #### FINE TUNING START
   valREFPO=analogRead(pinREFPO);
+// Move Stepper start
   if (valREFPO <= 50){
     digitalWrite(ms1, HIGH);
     digitalWrite(ms2, HIGH);
@@ -429,17 +428,23 @@ while ( valREFPO > 0 ){
     myStepper.attachEnable( enablePin, 10, HIGH ); 
     myStepper.setSpeedSteps(SpeedStepsSlow);
     myStepper.doSteps(-10000);
-      if (valREFPO < 10){
+// Move Stepper end
+      if (valREFPO < 8){
         myStepper.stop();
         digitalWrite(enablePin, HIGH);
         digitalWrite(pinRelais0, LOW);
         digitalWrite(pinRelais1, LOW);
+        valREFPO=analogRead(pinREFPO);
         lcd.clear();
-        lcd.setCursor(1,0);
+        lcd.setCursor(0,0);
+        lcd.print("Vref=");
+        lcd.print(valREFPO);
+        lcd.setCursor(0,1);
         lcd.print("COARSE Tuned !");
-        lcd.setCursor(3,0);
+        lcd.setCursor(0,2);
         lcd.print("CHECK SWR!");
-        delay(2000);
+        delay(5000);
+        lcd.clear();
         break;
 // ### FINE TUNING END        
     }
