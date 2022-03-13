@@ -430,7 +430,7 @@ while ( valREFPO > 0 ){
     myStepper.setSpeedSteps(SpeedStepsSlow);
     myStepper.doSteps(-10000);
 // Move Stepper end
-      if (valREFPO < 8){
+      if (valREFPO < 4){
         myStepper.stop();
         digitalWrite(enablePin, HIGH);
         digitalWrite(pinRelais0, LOW);
