@@ -103,7 +103,7 @@ void setup() {
         lcd.setCursor(10,3);
         lcd.print("    ");
 //Calibrate zero position
-lcd.clear();
+/*lcd.clear();
   while (valEndSensor == 0){
         valEndSensor=digitalRead(pinEndSensor);
         digitalWrite(ms1, LOW);            
@@ -129,11 +129,12 @@ lcd.clear();
           delay(1000);
          }
         lcd.setCursor(0,3);
-  }
+  }*/
   lcd.clear();
   myStepper.setZero();
   digitalWrite(enablePin, HIGH);
 }
+
 static void FFWD()
 {
 lcd.clear();
@@ -445,7 +446,7 @@ while ( valREFPO > 0 ){
         lcd.print("Position=");
         lcd.print(SfZe);
         lcd.setCursor(0,2);
-        lcd.print("COARSE Tuned !");
+        lcd.print("Tuned !");
         lcd.setCursor(0,3);
         lcd.print("CHECK SWR!");
         delay(3000);
