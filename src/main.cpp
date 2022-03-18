@@ -16,7 +16,7 @@ Using Subroutining
           *******************************************************************
 
 My Loop-Parameters: Min. capacity = 9.568 MHz
-                 Max. capacity = 29,900 MHz
+                    Max. capacity = 29,900 MHz
 
 */
 #include <Arduino.h>
