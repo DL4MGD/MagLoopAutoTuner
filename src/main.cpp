@@ -15,7 +15,7 @@ Using Subroutining
           *  box.       SO USE THIS FREE CODE FULLY AT YOUR OWN RISK!       *
           *******************************************************************
 
-Loop-Parameters: Min. capacity = 9.568 MHz
+My Loop-Parameters: Min. capacity = 9.568 MHz
                  Max. capacity = 29,900 MHz
 
 */
