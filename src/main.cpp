@@ -1,5 +1,5 @@
 /*
-Version: 1.50
+Version: 1.60
 Magloop Automatic Controller-Firmware
 Arduino Mega 2560 and A4988 Stepper Driver
 Author: Michael Poschner (DL4MGD)
@@ -102,34 +102,7 @@ void setup() {
   myStepper.attach( stepPin, dirPin );
         lcd.setCursor(10,3);
         lcd.print("    ");
-//Calibrate zero position
-/*lcd.clear();
-  while (valEndSensor == 0){
-        valEndSensor=digitalRead(pinEndSensor);
-        digitalWrite(ms1, LOW);            
-        digitalWrite(ms2, HIGH);            
-        digitalWrite(ms3, LOW);
-        myStepper.attachEnable( enablePin, 10, HIGH );
-        myStepper.setSpeedSteps(30000);     
-        myStepper.writeSteps(6000);       
-        lcd.setCursor(0,0);
-        lcd.print("Searching zero......");
-        lcd.setCursor(0,1);
-        SfZe=myStepper.readSteps();
-        if (SfZe >= 5900){
-          lcd.setCursor(0,3);
-          lcd.print("ERROR: No CalSig!");
-        }
-          else if (valEndSensor != 0){
-          myStepper.stop();
-          lcd.clear();
-          lcd.print("Found zero!");
-          lcd.setCursor(0,2);
-          lcd.print("Calibrated :-)");
-          delay(1000);
-         }
-        lcd.setCursor(0,3);
-  }*/
+
   lcd.clear();
   myStepper.setZero();
   digitalWrite(enablePin, HIGH);
@@ -373,7 +346,7 @@ static void ManuCal()
         lcd.setCursor(0,1);
         SfZe=myStepper.readSteps();
         valEndSensor=digitalRead(pinEndSensor);
-  if (SfZe >= 3900){
+  if (SfZe >= 9999){
           lcd.setCursor(0,3);
           lcd.print("ERROR: No CalSig!");
           delay(2000);
@@ -399,7 +372,7 @@ lcd.clear();
 valREFPO=analogRead(pinREFPO);
 valFWDPO=analogRead(pinFWDPO);
 digitalWrite(pinRelais0, HIGH);
-delay(100);
+delay(200);
 digitalWrite(pinRelais1, HIGH);
 CompFwRw=analogRead(pinREFPO);
 valREFPO=analogRead(pinREFPO);
@@ -449,7 +422,7 @@ while ( valREFPO > 0 ){
         lcd.print("Tuned !");
         lcd.setCursor(0,3);
         lcd.print("CHECK SWR!");
-        delay(3000);
+        delay(2000);
         lcd.clear();
         break;
 // ### FINE TUNING END        
