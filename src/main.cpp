@@ -38,7 +38,7 @@ My Loop-Parameters: Min. capacity = 9.568 MHz
   const int pinATSTART = A10;           // Autotune start
   const int pinATSTOP = A11;            // Autotune stop
   const int pinPTT = A12;               // Manually go on air
-  const int pinMaxOUT = A13;            // highest frequency
+  const int pinCalTune = A13;            // highest frequency
   const int pinPosSetZero = A14;        // Mobatools set zero
   const int pinManuCal = A15;           // Undefined jet
   const int pinEndSensor = A5;          // Zero detector
@@ -56,7 +56,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   int valATSTART = 0;                   // Manual start autotune
   int valATSTOP = 0;                    // Manual stop autotune
   int valPTT = 0;                       // Maximal Capacity 
-  int valMaxOUT = 0;                    // Minimal Capacity
+  int valCalTune = 0;                    // Minimal Capacity
   int valPosSetZero = 0;                // Mobatools set zero
   int valManuCal = 0;                   // Manual recalibrate
   float valREFPO = 0;                   // Initialize reflected power
@@ -89,7 +89,7 @@ void setup() {
   pinMode(pinATSTART, INPUT_PULLUP);
   pinMode(pinATSTOP, INPUT_PULLUP);
   pinMode(pinPTT, INPUT_PULLUP);
-  pinMode(pinMaxOUT, INPUT_PULLUP);
+  pinMode(pinCalTune, INPUT_PULLUP);
   pinMode(pinPosSetZero, INPUT_PULLUP);
   pinMode(pinManuCal, INPUT_PULLUP);
   pinMode(pinEndSensor, INPUT_PULLUP);
@@ -291,14 +291,14 @@ static void PTT()
   lcd.clear();
 }
 //******************** Automatic with calibration first START ************************************************
-static void MaxOUT()
+static void CalTune()
 
 {
   lcd.clear();
   digitalWrite(ms1, LOW);            
   digitalWrite(ms2, HIGH);            
   digitalWrite(ms3, LOW);
-//  myStepper.setZero();
+  myStepper.setZero();
   for (int i; i < 8000; i--){
         while (valManuCal == 0){
         valManuCal=digitalRead(pinManuCal);
@@ -565,10 +565,10 @@ void loop()
         delay(15);
         PTT();
       }
-     valMaxOUT = digitalRead(pinMaxOUT);
-      if (valMaxOUT == 0){
+     valCalTune = digitalRead(pinCalTune);
+      if (valCalTune == 0){
         delay(15);        
-        MaxOUT();
+        CalTune();
       }
       valPosSetZero = digitalRead(pinPosSetZero);
       if (valPosSetZero == 0){
