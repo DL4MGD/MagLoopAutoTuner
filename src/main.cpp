@@ -1,5 +1,5 @@
 /*
-Version: 1.60
+Version: 1.70
 Magloop Automatic Controller-Firmware
 Arduino Mega 2560 and A4988 Stepper Driver
 Author: Michael Poschner (DL4MGD)
@@ -290,27 +290,117 @@ static void PTT()
   digitalWrite(pinRelais1, LOW);    
   lcd.clear();
 }
+//******************** Automatic with calibration first START ************************************************
 static void MaxOUT()
+
 {
   lcd.clear();
-  while (valMaxOUT == 0){
-        valMaxOUT=digitalRead(pinMaxOUT);
-        digitalWrite(ms1, LOW);
-        digitalWrite(ms2, HIGH);
+  digitalWrite(ms1, LOW);            
+  digitalWrite(ms2, HIGH);            
+  digitalWrite(ms3, LOW);
+//  myStepper.setZero();
+  for (int i; i < 8000; i--){
+        while (valManuCal == 0){
+        valManuCal=digitalRead(pinManuCal);
+        }
+        valEndSensor=digitalRead(pinEndSensor);
+        digitalWrite(ms1, LOW);            
+        digitalWrite(ms2, HIGH);            
         digitalWrite(ms3, LOW);
         myStepper.attachEnable( enablePin, 10, HIGH );
-        myStepper.setSpeedSteps(36000);
-        myStepper.writeSteps(1500);
+        myStepper.setSpeedSteps(30000);     
+        myStepper.writeSteps(6000);       
         lcd.setCursor(0,0);
-        lcd.print("Going to pos!");
-        SfZe=myStepper.readSteps();
+        lcd.print("Searching zero.....");
         lcd.setCursor(0,1);
-        lcd.print("Position:");
-        lcd.setCursor(10,1);
+        SfZe=myStepper.readSteps();
+        valEndSensor=digitalRead(pinEndSensor);
+  if (SfZe >= 9999){
+          lcd.setCursor(0,3);
+          lcd.print("ERROR: No CalSig!");
+          delay(2000);
+          lcd.clear();
+          break;
+        }
+  else if (valEndSensor != 0){
+          myStepper.stop();
+          lcd.clear();
+          lcd.print("Found: Calibrated!");
+          delay(1000);
+          myStepper.setZero();
+          lcd.clear();
+          digitalWrite(enablePin, HIGH);
+          break;
+        }
+    }     
+ 
+
+
+lcd.clear();
+valREFPO=analogRead(pinREFPO);
+valFWDPO=analogRead(pinFWDPO);
+digitalWrite(pinRelais0, HIGH);
+delay(200);
+digitalWrite(pinRelais1, HIGH);
+CompFwRw=analogRead(pinREFPO);
+valREFPO=analogRead(pinREFPO);
+myStepper.setZero();
+lcd.setCursor(0,0);
+lcd.print("Tuning now...");
+// #### Coarse Tuning-Cycle start 
+while ( valREFPO > 0 ){
+
+
+// Move Stepper start
+    digitalWrite(ms1, HIGH); 
+    digitalWrite(ms2, HIGH); 
+    digitalWrite(ms3, HIGH);   
+    myStepper.attachEnable( enablePin, 10, HIGH ); 
+    myStepper.setSpeedSteps(SpeedStepsTuneFast);
+    myStepper.doSteps(3000);
+// Move Stepper end
+
+// #### Coarse Tuning-Cycle stop 
+// #### FINE TUNING START
+  valREFPO=analogRead(pinREFPO);
+// Move Stepper start
+  if (valREFPO <= 60){
+    digitalWrite(ms1, HIGH);
+    digitalWrite(ms2, HIGH);
+    digitalWrite(ms3, HIGH);
+    myStepper.attachEnable( enablePin, 10, HIGH ); 
+    myStepper.setSpeedSteps(SpeedStepsSlow);
+    myStepper.doSteps(-10000);
+// Move Stepper end
+      if (valREFPO < 4){
+        myStepper.stop();
+        digitalWrite(enablePin, HIGH);
+        digitalWrite(pinRelais0, LOW);
+        digitalWrite(pinRelais1, LOW);
+        valREFPO=analogRead(pinREFPO);
+        SfZe=myStepper.readSteps();
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print("Vref=");
+        lcd.print(valREFPO);
+        lcd.setCursor(0,1);
+        lcd.print("Position=");
         lcd.print(SfZe);
+        lcd.setCursor(0,2);
+        lcd.print("Tuned !");
+        lcd.setCursor(0,3);
+        lcd.print("CHECK SWR!");
+        delay(2000);
+        lcd.clear();
+        break;
+// ### FINE TUNING END        
     }
+  }
+}
+//############################ STOP Auto Tuning STOP  ###################################
   lcd.clear();
 }
+//******************** Automatic with calibration first STOP ************************************************
 static void PosSetZero()
 {
   lcd.clear();
