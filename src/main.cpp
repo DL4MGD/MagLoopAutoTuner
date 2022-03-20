@@ -440,12 +440,12 @@ static void ManuCal()
           lcd.clear();
           break;
         }
-  else if (valEndSensor != 0){
+  else if (valEndSensor == 0){
           myStepper.stop();
           lcd.clear();
           lcd.print("Found: Calibrated!");
           delay(1000);
-          myStepper.setZero();
+//          myStepper.setZero();
           lcd.clear();
           digitalWrite(enablePin, HIGH);
           break;
@@ -463,7 +463,7 @@ delay(200);
 digitalWrite(pinRelais1, HIGH);
 CompFwRw=analogRead(pinREFPO);
 valREFPO=analogRead(pinREFPO);
-myStepper.setZero();
+// myStepper.setZero();
 lcd.setCursor(0,0);
 lcd.print("Tuning now...");
 // #### Coarse Tuning-Cycle start 
