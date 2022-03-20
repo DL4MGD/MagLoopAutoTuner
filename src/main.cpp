@@ -326,16 +326,13 @@ static void CalTune()
           myStepper.stop();
           lcd.clear();
           lcd.print("Found: Calibrated!");
-          delay(1000);
+          delay(10);
           myStepper.setZero();
           lcd.clear();
           digitalWrite(enablePin, HIGH);
           break;
         }
     }     
- 
-
-
 lcd.clear();
 valREFPO=analogRead(pinREFPO);
 valFWDPO=analogRead(pinFWDPO);
