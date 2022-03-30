@@ -387,7 +387,7 @@ while ( valREFPO > 0 ){
         lcd.print("Tuned !");
         lcd.setCursor(0,3);
         lcd.print("CHECK SWR!");
-        delay(2000);
+        delay(1000);
         lcd.clear();
         break;
 // ### FINE TUNING END        
@@ -416,7 +416,9 @@ static void ManuCal()
   digitalWrite(ms1, LOW);            
   digitalWrite(ms2, HIGH);            
   digitalWrite(ms3, LOW);
-//  myStepper.setZero();
+  digitalWrite(pinRelais0, LOW);
+  digitalWrite(pinRelais1, LOW);
+  myStepper.setZero();
   for (int i; i < 8000; i--){
         while (valManuCal == 0){
         valManuCal=digitalRead(pinManuCal);
@@ -440,18 +442,18 @@ static void ManuCal()
           lcd.clear();
           break;
         }
-  else if (valEndSensor == 0){
+  else if (valEndSensor != 0){
           myStepper.stop();
           lcd.clear();
           lcd.print("Found: Calibrated!");
-          delay(1000);
-//          myStepper.setZero();
+          delay(10);
+          myStepper.setZero();
           lcd.clear();
           digitalWrite(enablePin, HIGH);
           break;
-        }
-    }     
- }
+        }   
+  }
+}
 //############################# START Auto Tuning START ####################
 static void ATSTART()
 {
@@ -509,7 +511,7 @@ while ( valREFPO > 0 ){
         lcd.print("Tuned !");
         lcd.setCursor(0,3);
         lcd.print("CHECK SWR!");
-        delay(2000);
+        delay(1000);
         lcd.clear();
         break;
 // ### FINE TUNING END        
