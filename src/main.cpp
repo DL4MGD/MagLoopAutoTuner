@@ -584,9 +584,7 @@ lcd.setCursor(0,0);
 valREFPO = analogRead(pinREFPO);
 valFWDPO = analogRead(pinFWDPO);
 
-valVSWR = ((valFWDPO-1)/(valREFPO+1));
-
-//ReflFact = ((valVSWR-1)/(valVSWR+1));
+valVSWR = ((valFWDPO)/valREFPO);
 
 valFFWD = digitalRead(pinFFWD);
 valFRWD = digitalRead(pinFRWD);
