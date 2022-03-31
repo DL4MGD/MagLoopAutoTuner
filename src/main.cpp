@@ -63,7 +63,8 @@ LiquidCrystal_I2C lcd(0x27,20,4);
   float valFWDPO = 0;                   // Initialize forward power
   float valVSWR = 0;                    // VSWR
   float valREFPObef = 0;                // Reflected power value before a tuning step
-  float valREFPOaft = 0;                // Refrectec power value after a tuning step
+  float valREFPOaft = 0;                // Reffected power value after a tuning step
+  float RefFact = 0.0;                  // Reflectionfactor
   int CompFwRw = 0;                     // Compare save value once
   int valSpeedSteps = 0;                //
   int valCurrentSpeed = 0;              // Save current speed setting
@@ -582,7 +583,11 @@ void loop()
 lcd.setCursor(0,0);
 valREFPO = analogRead(pinREFPO);
 valFWDPO = analogRead(pinFWDPO);
-valVSWR = (valFWDPO/valREFPO);        
+
+valVSWR = ((valFWDPO-1)/(valREFPO+1));
+
+//ReflFact = ((valVSWR-1)/(valVSWR+1));
+
 valFFWD = digitalRead(pinFFWD);
 valFRWD = digitalRead(pinFRWD);
 valSFWD = digitalRead(pinSFWD);
